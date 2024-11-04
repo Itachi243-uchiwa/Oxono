@@ -1,152 +1,97 @@
 package g63888.ascii.model;
 
-import g63888.ascii.controller.CommandPattern;
+import g63888.ascii.Util.Command;
+import g63888.ascii.Util.CommandManager;
+
+import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import g63888.ascii.view.View;
+import java.util.Random;
 
 public class AsciiPaint {
 
     private final Drawing drawing;
+    private final CommandManager command = new CommandManager();
 
 
     public AsciiPaint(int width, int height) {
         this.drawing = new Drawing(width, height);
     }
 
+
     /**
-     * Adds a circle to the drawing based on a command string.
-     * The command is expected to match the pattern for adding circles.
+     * Adds a circle to the drawing grid at the specified center coordinates, with the given radius and color.
      *
-     * @param command the command string to add a circle (e.g., "add circle 10 10 5 r")
+     * @param centerX the x-coordinate of the center of the circle
+     * @param centerY the y-coordinate of the center of the circle
+     * @param radius the radius of the circle
+     * @param color the color of the circle
      */
-    public void addCircle(String command) {
-            Matcher matcher = Pattern.compile(CommandPattern.ADD_CIRCLE.getPattern()).matcher(command);
-            if (matcher.find()) {
-                double centerX = Double.parseDouble(matcher.group(1));
-                double centerY = Double.parseDouble(matcher.group(2));
-                double radius = Double.parseDouble(matcher.group(3));
-                char color = matcher.group(4).charAt(0);
-                drawing.addShape(new Circle(new Point(centerX, centerY), radius, color));
-                View.display("Circle added.");
-            } else {
-                View.display("Invalid circle command.");
-            }
+    public void addCircle(double centerX, double centerY, double radius, char color) {
+        Shape shape = new Circle(new Point(centerX, centerY), radius, color);
+        command.do_(new AddCommand(drawing, shape));
+    }
+
+    /**
+     * Adds a rectangle to the drawing grid at the specified upper-left coordinates, with the given width, height, and color.
+     *
+     * @param upperLeftX the x-coordinate of the upper-left corner of the rectangle
+     * @param upperLeftY the y-coordinate of the upper-left corner of the rectangle
+     * @param width the width of the rectangle
+     * @param height the height of the rectangle
+     * @param color the color of the rectangle
+     */
+    public void addRectangle(double upperLeftX, double upperLeftY, double width, double height, char color) {
+        Shape shape = new Rectangle(new Point(upperLeftX, upperLeftY),width,height,color);
+        command.do_(new AddCommand(drawing, shape));
 
     }
 
     /**
-     * Adds a rectangle to the drawing based on a command string.
-     * The command is expected to match the pattern for adding rectangles.
+     * Adds a square to the drawing grid at the specified upper-left coordinates, with the given side length and color.
      *
-     * @param command the command string to add a rectangle (e.g., "add rectangle 10 10 5 20 r")
+     * @param upperLeftX the x-coordinate of the upper-left corner of the square
+     * @param upperLeftY the y-coordinate of the upper-left corner of the square
+     * @param side the side length of the square
+     * @param color the color of the square
      */
-    public void addRectangle(String command) {
+    public void addSquare(double upperLeftX, double upperLeftY, double side, char color) {
+        Shape shape = new Square(new Point(upperLeftX, upperLeftY), side, color);
+        command.do_(new AddCommand(drawing, shape));
+    }
 
-            Matcher matcher = Pattern.compile(CommandPattern.ADD_RECTANGLE.getPattern()).matcher(command);
-            if (matcher.find()) {
-                double upperLeftX = Double.parseDouble(matcher.group(1));
-                double upperLeftY = Double.parseDouble(matcher.group(2));
-                double width = Double.parseDouble(matcher.group(3));
-                double height = Double.parseDouble(matcher.group(4));
-                char color = matcher.group(5).charAt(0);
-                drawing.addShape(new Rectangle(new Point(upperLeftX, upperLeftY), width, height, color));
-                View.display("Rectangle added.");
-            } else {
-                View.display("Invalid rectangle command.");
-            }
+
+    /**
+     * Moves a shape at the specified index in the drawing grid to the new coordinates (x, y).
+     *
+     * @param index the index of the shape to be moved in the drawing grid
+     * @param x the new x-coordinate of the shape
+     * @param y the new y-coordinate of the shape
+     */
+    public void moveShape(int index, double x, double y) {
+        Shape shape = drawing.getShapeAt(index);
+        if (shape != null) {
+            shape.move(x, y);
+        }
+    }
+
+    /**
+     * Removes a shape at the specified index from the drawing grid.
+     *
+     * @param index the index of the shape to be removed in the drawing grid
+     */
+    public void removeShape(int index) {
+        command.do_(new DeleteCommand(drawing, index));
 
     }
 
     /**
-     * Adds a square to the drawing based on a command string.
-     * The command is expected to match the pattern for adding squares.
+     * Changes the color of a shape at the specified index in the drawing grid.
      *
-     * @param command the command string to add a square (e.g., "add square 10 10 5 r")
+     * @param index the index of the shape to be colored in the drawing grid
+     * @param color the new color of the shape
      */
-    public void addSquare(String command) {
-
-            Matcher matcher = Pattern.compile(CommandPattern.ADD_SQUARE.getPattern()).matcher(command);
-            if (matcher.find()) {
-                double upperLeftX = Double.parseDouble(matcher.group(1));
-                double upperLeftY = Double.parseDouble(matcher.group(2));
-                double side = Double.parseDouble(matcher.group(3));
-                char color = matcher.group(4).charAt(0);
-                drawing.addShape(new Square(new Point(upperLeftX, upperLeftY), side, color));
-                View.display("Square added.");
-            } else {
-                View.display("Invalid square command.");
-            }
-
-    }
-
-    /**
-     * Moves a shape in the drawing based on a command string.
-     * The command is expected to match the pattern for moving shapes.
-     *
-     * @param command the command string to move a shape (e.g., "move 1 10 5")
-     */
-    public void moveShape(String command) {
-            Matcher matcher = Pattern.compile(CommandPattern.MOVE.getPattern()).matcher(command);
-            if (matcher.find()) {
-                int index = Integer.parseInt(matcher.group(1));
-                double dx = Double.parseDouble(matcher.group(2));
-                double dy = Double.parseDouble(matcher.group(3));
-
-                Shape shape = Drawing.getShapeAt(index);
-
-                if (shape != null) {
-                    shape.move(dx, dy);
-                    View.display("Shape moved.");
-                }
-            } else {
-                View.display("Invalid move command.");
-            }
-    }
-
-    /**
-     * Removes a shape from the drawing based on a command string.
-     * The command is expected to match the pattern for deleting shapes.
-     *
-     * @param command the command string to delete a shape (e.g., "delete 1")
-     */
-    public void removeShape(String command) {
-            Matcher matcher = Pattern.compile(CommandPattern.DELETE.getPattern()).matcher(command);
-            if (matcher.find()) {
-                int index = Integer.parseInt(matcher.group(1));
-                Shape shape = Drawing.getShapeAt(index);
-                List<Shape> shapes = Drawing.getShapes();
-                if (shape != null) {
-                    shapes.remove(shape);
-                    View.display("Shape deleted.");
-                }
-            } else {
-                View.display("Invalid delete command.");
-            }
-
-    }
-
-    /**
-     * Changes the color of a shape in the drawing based on a command string.
-     * The command is expected to match the pattern for changing colors.
-     *
-     * @param command the command string to change a shape's color (e.g., "color 1 B")
-     */
-    public void setColor(String command) {
-
-            Matcher matcher = Pattern.compile(CommandPattern.COLOR.getPattern()).matcher(command);
-            if (matcher.find()) {
-                int index = Integer.parseInt(matcher.group(1));
-                char color = matcher.group(2).charAt(0);
-
-                Shape shape = Drawing.getShapeAt(index);
-                if (shape != null) {
-                    shape.setColor(color);
-                }
-            } else {
-                View.display("Invalid color command.");
-            }
+    public void setColor(int index, char color) {
+        command.do_(new ChangeColorCommand(drawing, index, color));
 
     }
 
@@ -159,7 +104,7 @@ public class AsciiPaint {
      */
     public char getColor(int x, int y) {
         Shape shape = drawing.getShapeAt(new Point(x, y));
-        return (shape != null) ? shape.getColor() : 0;
+        return (shape != null) ? shape.getColor() : ' ';
     }
 
     /**
@@ -179,4 +124,41 @@ public class AsciiPaint {
     public int getHeight() {
         return drawing.getHeight();
     }
+
+    public void group (List<Integer> indexes) {
+
+        Random random = new Random();
+        Group group = new Group( (char) (random.nextInt(26) + 'A'));
+
+        for (int index : indexes) {
+            Shape shape = drawing.getShapeAt(index);
+            if (shape != null ) {
+                group.addShape(shape);
+                drawing.removeShape(shape);
+            }
+        }
+        drawing.addShape(group);
+    }
+
+    public void ungroup(int index) {
+        Shape shape = drawing.getShapeAt(index);
+
+        if (shape instanceof Group group) {
+            for (Shape subshape : group.getShapes()) {
+                drawing.addShape(subshape);
+            }
+            drawing.removeShape(shape);
+        } else
+            System.out.println("Selected shape is not a group");
+
+
+
+    }
+    public void undo() {
+        command.undo();
+    }
+    public void redo() {
+        command.redo();
+    }
+
 }

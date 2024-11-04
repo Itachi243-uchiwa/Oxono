@@ -2,9 +2,11 @@ package dev3.projet.meteo.view;
 
 import dev3.projet.meteo.controller.Controller;
 import dev3.projet.meteo.model.WeatherObject;
+import dev3.projet.meteo.model.observer.Observer;
 import javafx.animation.FadeTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,20 +14,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
 import java.time.LocalDate;
 
-/**
- * MainView class is the main UI component for displaying weather information.
- * It handles user input for city and date, fetches weather data, and displays the result.
- */
-public class MainView {
+public class MainView implements Observer {
 
     private Controller controller;
     private final InputView inputView;
@@ -39,19 +33,26 @@ public class MainView {
     private final Button searchButton;
     private final ProgressIndicator progressIndicator;
 
-    /**
-     * Constructor to initialize the main view, setting up the layout and components.
-     *
-     * @param stage the primary stage where the scene is displayed
-     */
     public MainView(Stage stage) {
         inputView = new InputView();
         weatherView = new WeatherView();
         this.images = new Images();
         searchButton = new Button("Search");
 
-        stage.setTitle("Weather Application");
+        searchButton.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-size: 16px;");
+
+        Background background = new Background(new BackgroundFill(
+                new javafx.scene.paint.LinearGradient(
+                        0, 0, 1, 1, true, javafx.scene.paint.CycleMethod.NO_CYCLE,
+                        new javafx.scene.paint.Stop(0, javafx.scene.paint.Color.web("#e0f7fa")),
+                        new javafx.scene.paint.Stop(1, javafx.scene.paint.Color.web("#4fc3f7"))
+                ),
+                CornerRadii.EMPTY,
+                Insets.EMPTY
+        ));
+
         BorderPane root = new BorderPane();
+        root.setBackground(background);
 
         HBox inputBox = new HBox(10, inputView.getText(), inputView.getDate(), searchButton);
         inputBox.setAlignment(Pos.CENTER);
@@ -65,14 +66,14 @@ public class MainView {
 
         root.setBottom(inputBox);
 
-        cityLabel = new Label("Torgny");
-        cityLabel.setStyle("-fx-font-size: 38px; -fx-font-weight: bold;");
+        cityLabel = new Label("City");
+        cityLabel.setStyle("-fx-font-size: 38px; -fx-font-weight: bold; -fx-text-fill: #000000;");
 
         tempMinLabel = new Label("12.4°");
-        tempMinLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: blue; -fx-font-weight: bold;");
+        tempMinLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: #2196F3; -fx-font-weight: bold;");
 
         tempMaxLabel = new Label("16.5°");
-        tempMaxLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: black; -fx-font-weight: bold;");
+        tempMaxLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: #f44336; -fx-font-weight: bold;");
 
         weatherImage = new ImageView();
 
@@ -93,7 +94,7 @@ public class MainView {
 
         progressIndicator = new ProgressIndicator();
         progressIndicator.setPrefSize(80, 80);
-        progressIndicator.setVisible(false);
+        progressIndicator.setStyle("-fx-progress-color: #4caf50;");
 
         VBox progressBox = new VBox(progressIndicator);
         progressBox.setAlignment(Pos.CENTER);
@@ -121,20 +122,14 @@ public class MainView {
 
         searchButton.setOnAction(e -> performSearch());
 
-        searchButton.setOnKeyPressed(event -> {
-            if (event.getCode() == KeyCode.UP) {
-                inputView.getDate().requestFocus();
-            }
-        });
-
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
         stage.show();
     }
 
     /**
-     * Handles the search operation for fetching weather data based on the city and date.
-     * Displays the progress indicator and hides all other elements until the search is complete.
+     * Executes the search for weather data based on user input.
+     * It validates the inputs and displays a loading indicator during the fetch operation.
      */
     private void performSearch() {
         String city = inputView.getText().getText();
@@ -188,27 +183,26 @@ public class MainView {
     }
 
     /**
-     * Sets the controller for the MainView to handle data fetching.
+     * Sets the controller for this view.
      *
-     * @param controller the controller to be set
+     * @param controller The controller to be set
      */
     public void setController(Controller controller) {
         this.controller = controller;
     }
 
     /**
-     * Updates the weather view with new weather data retrieved from the model.
+     * Updates the weather information displayed in the view.
      *
-     * @param values the WeatherObject containing the updated weather data
+     * @param values The weather data to display
      */
+    @Override
     public void update(WeatherObject values) {
-
         FadeTransition fadeOut = new FadeTransition(Duration.millis(500), weatherImage);
         fadeOut.setFromValue(1.0);
         fadeOut.setToValue(0.0);
 
         fadeOut.setOnFinished(event -> {
-
             weatherView.setName(values.locality());
             weatherView.setTempMin(values.tempMin());
             weatherView.setTempMax(values.tempMax());
@@ -232,7 +226,6 @@ public class MainView {
         fadeOutText.setToValue(0.0);
 
         fadeOutText.setOnFinished(event -> {
-
             tempMinLabel.setText(values.tempMin() + "°");
             tempMaxLabel.setText(values.tempMax() + "°");
 

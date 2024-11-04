@@ -18,25 +18,12 @@ public class View {
      * Each shape is rendered at its position using its color.
      */
     public void display() {
-        List<Shape> shapes = Drawing.getShapes();
-        for (int y = 0; y < paint.getHeight(); y++) {
-            for (int x = 0; x < paint.getWidth(); x++) {
-                boolean found = false;
-                Point point = new Point(x, y);
-                for (Shape shape : shapes) {
-                    if (shape.isInside(point)) {
-                        System.out.print(shape.getColor());
-                        found = true;
-                        break;
-                    }
-                }
-                if (!found) {
-                    System.out.print(" ");
-                }
+        for (int i = 0; i < paint.getWidth(); i++) {
+            for (int j = 0; j < paint.getHeight(); j++) {
+                System.out.print(paint.getColor(i, j));
             }
             System.out.println();
         }
-        System.out.println();
     }
 
     /**
@@ -98,7 +85,11 @@ public class View {
         display("5. Déplacer une forme : move 2 10 6");
         display("6. Changer la couleur : color 4 C");
         display("7. Supprimer une forme : delete 1 (indice de la forme)");
-        display("8. Quitter : tapez 'Quit' pour quitter");
+        display("9. Grouper des formes : group 1 2 (indices des formes)");
+        display("10. Dégrouper une forme : ungroup 1 (indice de la forme)");
+        display("11. Annuler une action : undo");
+        display("12. Rétablir une action : redo");
+        display("13. Quitter : tapez 'Quit' pour quitter");
         display("");
     }
 }

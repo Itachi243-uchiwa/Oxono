@@ -1,18 +1,20 @@
 package dev3.projet.meteo.model;
 
+import dev3.projet.meteo.model.observer.Observable;
+import dev3.projet.meteo.model.observer.Observer;
+
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class Model {
+public class Model implements Observable {
 
-    private String address;
-    private LocalDate date;
     private Map<String, WeatherObject> cache;
+    private List<Observer> observers = new ArrayList<Observer>();
 
-    public Model(String address, LocalDate date) {
-        this.address = address;
-        this.date = date;
+    public Model() {
         this.cache = new HashMap<>();
     }
 
@@ -28,6 +30,28 @@ public class Model {
         WeatherObject weatherData = WeatherApi.fetch(address, datum);
         cache.put(key, weatherData);
 
+        notifyObservers(weatherData);
+
         return weatherData;
     }
-}
+
+        @Override
+        public void registerObserver(Observer observer) {
+            if (!observers.contains(observer)) {
+                observers.add(observer);
+            }
+        }
+
+        @Override
+        public void removeObserver(Observer observer) {
+            observers.remove(observer);
+        }
+
+        @Override
+        public void notifyObservers(WeatherObject object) {
+            for (Observer observer : observers) {
+                observer.update(object);
+            }
+        }
+    }
+

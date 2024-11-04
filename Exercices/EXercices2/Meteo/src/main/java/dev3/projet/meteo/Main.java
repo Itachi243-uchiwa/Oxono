@@ -12,10 +12,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) {
 
-        String address = "Torgny";
-        LocalDate date = LocalDate.now();
-
-        Model model = new Model(address, date);
+        Model model = new Model();
 
         MainView mainView = new MainView(primaryStage);
 

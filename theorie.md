@@ -138,3 +138,24 @@ LES GENERIQUES
     }
 
             
+            
+            
+LAMBDA
+
+  Question 1
+   
+   1. List<Person> filteredList = filter(myList, p -> p.getFirstname().startsWith("J"));
+    
+   2. List<Person> filteredList = filter(myList, p ->  p.getFirstname().startsWith("J") && p.getAge() < 50);
+
+
+ Question 2
+ 
+   1.  Collections.sort(list, (word1, word2) -> word1.length() - word2.length());
+   2. Collections.sort(list, (w1, w2) -> Character.compare(w1.charAt(0), w2.charAt(0)));
+
+ Question 3
+ 
+   3. (w1, w2) -> {...} : Acceptée. Le compilateur peut inférer le type.
+   8. (w1, w2) -> w1.length() - w2.length(); : Acceptée. Cette syntaxe est valide sans return et sans accolades si c'est une simple expression.
+   9. (w1, w2) -> w1.length() - w2.length() : Acceptée.

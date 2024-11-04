@@ -18,11 +18,8 @@ public class Drawing {
         shapes.add(shape);
     }
 
-    public boolean remove(Shape shape) {
-        return shapes.remove(shape);
-    }
-    public  boolean remove(int index) {
-        return shapes.remove(index) != null;
+    public void removeShape(Shape shape) {
+        shapes.remove(shape);
     }
 
     public int getWidth() {
@@ -34,7 +31,7 @@ public class Drawing {
     }
 
 
-    public static Shape getShapeAt(int index) {
+    public Shape getShapeAt(int index) {
         if (index >= 0 && index < shapes.size()) {
             return shapes.get(index);
         }

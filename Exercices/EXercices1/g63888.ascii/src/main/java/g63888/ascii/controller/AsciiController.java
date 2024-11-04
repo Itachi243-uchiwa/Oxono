@@ -1,8 +1,14 @@
 package g63888.ascii.controller;
 
+import g63888.ascii.Util.CommandManager;
 import g63888.ascii.model.AsciiPaint;
 import g63888.ascii.view.*;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AsciiController {
 
@@ -45,29 +51,27 @@ public class AsciiController {
      */
     private void parseCommand(String command) {
         try {
-            if (command.startsWith("add circle")) {
-                paint.addCircle(command);
-            } else if (command.startsWith("add rectangle")) {
-                paint.addRectangle(command);
-            } else if (command.startsWith("add square")) {
-                paint.addSquare(command);
-            } else if (command.equals("show")) {
-                view.showShapes();
-            } else if (command.equals("list")) {
-                view.listShapes();
-            } else if (command.startsWith("move")) {
-                paint.moveShape(command);
-            } else if (command.startsWith("color")) {
-                paint.setColor(command);
-            } else if (command.startsWith("delete")) {
-                paint.removeShape(command);
-            } else {
-                View.display("Unknown command");
-            }
-        } catch (NumberFormatException e) {
-            View.display("Invalid number format: " + e.getMessage());
+            processOtherCommands(command);
+
         } catch (Exception e) {
             View.display("An error occurred: " + e.getMessage());
         }
     }
+
+    private void processOtherCommands(String command) {
+
+        boolean matched = false;
+        for (CommandRegex pattern : CommandRegex.values()) {
+            if (command.matches(pattern.getPattern())) {
+                pattern.execute(paint, command);
+                matched = true;
+                break;
+            }
+        }
+        if (!matched) {
+            View.display("Commande non reconnue. Veuillez réessayer.");
+        }
+    }
+
+
 }
