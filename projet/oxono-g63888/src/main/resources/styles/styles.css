@@ -1,0 +1,102 @@
+/* Styles généraux */
+.root {
+    -fx-background-color: #2E1A47;
+}
+
+/* Style du conteneur principal du jeu */
+.board-container {
+    -fx-background-color: #4B2B75;
+    -fx-padding: 20;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #8A63B3;
+    -fx-border-width: 2;
+}
+
+/* Style des cellules du plateau */
+.board-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: #FF69B4;
+    -fx-border-width: 1;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-cursor: hand;
+}
+
+/* Style pour les mouvements valides */
+.valid-move {
+    -fx-background-color: rgba(0, 255, 0, 0.3);
+    -fx-background-radius: 5;
+}
+
+.hover-move {
+    -fx-background-color: rgba(255, 0, 0, 0.3);
+    -fx-background-radius: 5
+}
+
+/* Style de l'en-tête */
+.header {
+    -fx-background-color: #4B2B75;
+    -fx-padding: 15;
+    -fx-background-radius: 10;
+    -fx-border-color: #8A63B3;
+    -fx-border-radius: 10;
+}
+
+/* Style du label du tour du joueur */
+.player-turn-label {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* Style des boutons */
+.game-button {
+    -fx-background-color: #8A63B3;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15;
+    -fx-background-radius: 5;
+}
+
+.game-button:hover {
+    -fx-background-color: #9973C3;
+    -fx-cursor: hand;
+}
+
+/* Style des racks des joueurs */
+.rack-container {
+    -fx-background-color: #4B2B75;
+    -fx-padding: 15;
+    -fx-background-radius: 10;
+    -fx-border-color: #8A63B3;
+    -fx-border-radius: 10;
+    -fx-spacing: 10;
+}
+
+/* Style des labels des racks */
+.rack-label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Style du label de statut */
+.status-label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Style des conteneurs de pions */
+.pawns-container {
+    -fx-spacing: 5;
+    -fx-padding: 5;
+    -fx-alignment: center;
+}
+
+/* Style des séparateurs */
+.separator {
+    -fx-background-color: #8A63B3;
+    -fx-padding: 1;
+}

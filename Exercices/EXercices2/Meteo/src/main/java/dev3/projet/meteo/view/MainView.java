@@ -55,6 +55,8 @@ public class MainView implements Observer {
         root.setBackground(background);
 
         HBox inputBox = new HBox(10, inputView.getText(), inputView.getDate(), searchButton);
+        inputBox.getStyleClass().add("search-box");
+
         inputBox.setAlignment(Pos.CENTER);
 
         inputView.getText().setMaxWidth(Double.MAX_VALUE);
@@ -67,13 +69,15 @@ public class MainView implements Observer {
         root.setBottom(inputBox);
 
         cityLabel = new Label("City");
-        cityLabel.setStyle("-fx-font-size: 38px; -fx-font-weight: bold; -fx-text-fill: #000000;");
+        cityLabel.getStyleClass().add("city-label");
 
         tempMinLabel = new Label("12.4°");
-        tempMinLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: #2196F3; -fx-font-weight: bold;");
+        tempMinLabel.getStyleClass().add("temp-label");
+        tempMinLabel.getStyleClass().add("temp-min");
 
         tempMaxLabel = new Label("16.5°");
-        tempMaxLabel.setStyle("-fx-font-size: 32px; -fx-text-fill: #f44336; -fx-font-weight: bold;");
+        tempMaxLabel.getStyleClass().add("temp-label");
+        tempMaxLabel.getStyleClass().add("temp-max");
 
         weatherImage = new ImageView();
 
@@ -88,6 +92,7 @@ public class MainView implements Observer {
         tempAndImageBox.getChildren().addAll(tempBx, weatherImage);
 
         VBox weatherBox = new VBox(10);
+        weatherBox.getStyleClass().add("weather-box");
         weatherBox.setAlignment(Pos.CENTER);
         weatherBox.getChildren().addAll(tempAndImageBox, cityLabel);
         root.setCenter(weatherBox);
@@ -123,6 +128,7 @@ public class MainView implements Observer {
         searchButton.setOnAction(e -> performSearch());
 
         Scene scene = new Scene(root, 800, 600);
+        scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
         stage.setScene(scene);
         stage.show();
     }
