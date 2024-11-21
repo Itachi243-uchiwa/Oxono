@@ -1,6 +1,5 @@
 package dev3.projet.oxono_g63888.model.Observer;
 
-
 import dev3.projet.oxono_g63888.model.OxonoException;
 
 import java.util.Collections;
@@ -14,7 +13,7 @@ public class OxonoEvent {
 
     public OxonoEvent(ObservableEvent event) {
         if (event == null) {
-            throw new OxonoException( "Event cannot be null.");
+            throw new OxonoException("Event cannot be null.");
         }
         this.event = event;
         this.eventData = new HashMap<>();
@@ -33,15 +32,13 @@ public class OxonoEvent {
     }
 
     public <T> T getEventData(String key, Class<T> type) {
-        if (!eventData.containsKey(key)) {
-            throw new OxonoException("Key not found in event data: " + key);
-        }
         Object value = eventData.get(key);
         if (type.isInstance(value)) {
             return type.cast(value);
         }
-        throw new OxonoException("Invalid type for event data: Expected " + type.getName() + " but found " + (value != null ? value.getClass().getName() : "null"));
+        return null;
     }
+
 
     public Map<String, Object> getAllEventData() {
         return Collections.unmodifiableMap(eventData);

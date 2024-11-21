@@ -7,5 +7,6 @@ public enum ObservableEvent {
     UNDO,
     REDO,
     WIN,
-    DRAW;
+    DRAW,
+    SURRENDER;
 }

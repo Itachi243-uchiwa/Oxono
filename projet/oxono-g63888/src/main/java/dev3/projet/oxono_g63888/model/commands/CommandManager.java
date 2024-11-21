@@ -1,6 +1,5 @@
 package dev3.projet.oxono_g63888.model.commands;
 
-
 import dev3.projet.oxono_g63888.model.OxonoException;
 
 import java.util.Stack;
@@ -17,7 +16,7 @@ public class CommandManager {
     }
 
     public Command undo() {
-        if (!canUndo()){
+        if (!canUndo()) {
             throw new OxonoException("Can't undo");
         }
         Command command = undoStack.pop();
@@ -27,7 +26,7 @@ public class CommandManager {
     }
 
     public Command redo() {
-        if (!canRedo()){
+        if (!canRedo()) {
             throw new OxonoException("Can't redo");
         }
         Command command = redoStack.pop();
@@ -35,6 +34,7 @@ public class CommandManager {
         undoStack.push(command);
         return command;
     }
+
     public Command getUndoPeek() {
         return undoStack.peek();
     }

@@ -12,9 +12,11 @@ public class AIPlayer extends Player {
         this.strategy = strategy;
     }
 
-    public Move getNextMove(Board board) {return strategy.getNextMove(board);
+    public Move getNextMove(Board board) {
+        return strategy.getNextMove(board);
     }
+
     public Move getNextTotemMove(Board board) {
-        return strategy.getNextTotemMove(board);
+        return strategy.getNextTotemMove(board, this);
     }
 }

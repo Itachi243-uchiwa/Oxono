@@ -3,11 +3,6 @@ package dev3.projet.oxono_g63888.model;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Represents a board for the Oxono game.
- * The game consists of a square board where players move totems and place pawns
- * to create winning alignments of 4 pieces of the same mark (X/O) or color.
- */
 public class Board {
     private Token[][] board;
 
@@ -15,13 +10,11 @@ public class Board {
     private Position totemPosO;
 
     private int size;
+    private List<Position> winningPositions;
 
-    /**
-     * Creates a new board with the specified size
-     * @param size The width/height of the square board
-     */
     public Board(int size) {
         this.size = size;
+        this.winningPositions = new ArrayList<>();
         initializeBoard(size);
     }
 
@@ -39,10 +32,10 @@ public class Board {
             }
         }
 
-        int medium = size/2;
-        board[medium-1][medium-1] = new Totem(Mark.X);
+        int medium = size / 2;
+        board[medium - 1][medium - 1] = new Totem(Mark.X);
         board[medium][medium] = new Totem(Mark.O);
-        totemPosX = new Position(medium -1, medium-1);
+        totemPosX = new Position(medium - 1, medium - 1);
         totemPosO = new Position(medium, medium);
     }
 
@@ -114,14 +107,25 @@ public class Board {
         }
     }
 
+
+    /**
+    * Removes a pawn from the board at the specified position.
+    * @param pawnPosition The position of the pawn to be removed.
+    * @throws OxonoException If the position is invalid (out of bounds or does not contain a pawn).
+    */
     public void removePawn(Position pawnPosition) {
-        if (!isEmpty(pawnPosition)) {
-            board[pawnPosition.row()][pawnPosition.column()] = null;
+
+        if (isEmpty(pawnPosition)){
+            throw new OxonoException("Invalid position: no pawn found at " + pawnPosition);
         }
+        board[pawnPosition.row()][pawnPosition.column()] = null;
     }
+
+
 
     /**
      * Inserts a token at the specified position if it's empty and within bounds
+     *
      * @throws OxonoException if the position is invalid
      */
     private void insertToken(Token token, Position pos) {
@@ -163,17 +167,7 @@ public class Board {
      * Checks if a totem is surrounded by other pieces (landlocked)
      */
     private boolean isLandLockedTotem(Position pos) {
-        for (Direction dir : Direction.values()) {
-            int newRow = pos.row() + dir.getDeltaX();
-            int newCol = pos.column() + dir.getDeltaY();
-
-            if (isInBounds(new Position(newRow, newCol))) {
-                if (isEmpty(new Position(newRow, newCol))) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return getAdjacentCells(pos).isEmpty();
     }
 
 
@@ -194,6 +188,7 @@ public class Board {
                 }
                 currentRow += dir.getDeltaX();
                 currentCol += dir.getDeltaY();
+                currentPos = new Position(currentRow, currentCol);
             }
         }
         return nextPositions;
@@ -208,15 +203,17 @@ public class Board {
         for (Direction dir : Direction.values()) {
             int currentRow = pos.row() + dir.getDeltaX();
             int currentCol = pos.column() + dir.getDeltaY();
+            Position currentPos = new Position(currentRow, currentCol);
 
-            while (isInBounds(new Position(currentRow, currentCol))) {
-                if (isEmpty(new Position(currentRow, currentCol))) {
-                    positions.add(new Position(currentRow, currentCol));
+            while (isInBounds(currentPos)) {
+                if (isEmpty(currentPos)) {
+                    positions.add(currentPos);
                 } else {
                     break;
                 }
                 currentRow += dir.getDeltaX();
                 currentCol += dir.getDeltaY();
+                currentPos = new Position(currentRow, currentCol);
             }
         }
         return positions;
@@ -225,8 +222,8 @@ public class Board {
     /**
      * Validates if a pawn can be inserted at the given position relative to its totem
      */
-    public boolean isValidInsertion(Position pawnPos, Position totemPos){
-        if (!(isEmpty(pawnPos) || !isInBounds(pawnPos))){
+    public boolean isValidInsertion(Position pawnPos, Position totemPos) {
+        if (!(isEmpty(pawnPos) || !isInBounds(pawnPos))) {
             return false;
         }
         return getInsertionPositions(totemPos).contains(pawnPos);
@@ -279,94 +276,127 @@ public class Board {
     }
 
 
+  
     /**
-     * Checks if there's a winning condition for a pawn at the given position
-     * Wins can be achieved by aligning 4 pawns of the same mark or color
+     * Checks if the given pawn has won the game by forming a sequence of 4 or more consecutive pawns
+     * in a horizontal or vertical direction.
+     *
+     * @param pawn  The pawn to check for a win
+     * @param pos    The position of the pawn on the board
+     * @return true if the pawn has won, false otherwise
      */
     public boolean checkWin(Pawn pawn, Position pos) {
-        return checkLineWin(pawn, pos.row()) || checkColumnWin(pawn, pos.column());
-    }
+        // (LEFT + RIGHT)
+        List<Position> horizontalPositions = checkDirectionalWin(pawn, pos, Direction.LEFT, Direction.RIGHT);
+        if (horizontalPositions.size() >= 4) {
+            winningPositions = horizontalPositions;
+            return true;
+        }
 
+        // (UP + DOWN)
+        List<Position> verticalPositions = checkDirectionalWin(pawn, pos, Direction.UP, Direction.DOWN);
+        if (verticalPositions.size() >= 4) {
+            winningPositions = verticalPositions;
+            return true;
+        }
+
+        winningPositions = new ArrayList<>();
+        return false;
+    }
     /**
-     * Checks if there are 4 pawns aligned horizontally with the same mark or color
+     * Checks if the given pawn has won the game by forming a sequence of 4 or more consecutive pawns
+     * in a horizontal or vertical direction.
+     * @param pawn  The pawn to check for a win
+     * @param pos    The position of the pawn on the board
+     * @return true if the pawn has won, false otherwise
      */
-    private boolean checkLineWin(Pawn pawn, int row) {
-        int markCount = 0;
-        int colorCount = 0;
-
-        for (int i = 0; i < size; i++) {
-            Token currentToken = board[row][i];
-
-            if (!isValidPawn(currentToken)) {
-                markCount = 0;
-                colorCount = 0;
-                continue;
-            }
-
-            int[] updatedCounts = updateCounters(currentToken, pawn, markCount, colorCount);
-            markCount = updatedCounts[0];
-            colorCount = updatedCounts[1];
-
-            if (hasWinningSequence(markCount, colorCount)) {
-                return true;
-            }
+    private List<Position> checkDirectionalWin(Pawn pawn, Position pos, Direction dir1, Direction dir2) {
+        List<Position> colorMatches = checkSequence(pawn, pos, dir1, dir2, true);
+        if (colorMatches.size() >= 4) {
+            return colorMatches;
         }
-        return false;
+        return checkSequence(pawn, pos, dir1, dir2, false);
     }
 
-    private boolean checkColumnWin(Pawn pawn, int col) {
-        int markCount = 0;
-        int colorCount = 0;
 
-        for (int i = 0; i < size; i++) {
-            Token currentToken = board[i][col];
+        /**
+     * Checks a sequence of pawns in a specific direction and returns a list of matching positions.
+     *
+     * @param pawn       The pawn to check for a sequence.
+     * @param pos        The position of the pawn on the board.
+     * @param dir1       The first direction to check for a sequence.
+     * @param dir2       The second direction to check for a sequence.
+     * @param checkColor Whether to check for matching colors or marks.
+     * @return A list of positions that form a sequence of 4 or more consecutive pawns.
+     */
+    private List<Position> checkSequence(Pawn pawn, Position pos, Direction dir1, Direction dir2, boolean checkColor) {
+        List<Position> positions = new ArrayList<>();
+        positions.add(pos);
 
-            if (!isValidPawn(currentToken)) {
-                markCount = 0;
-                colorCount = 0;
-                continue;
-            }
+        positions.addAll(checkDirection(pawn, pos, dir1, checkColor));
 
-            int[] updatedCounts = updateCounters(currentToken, pawn, markCount, colorCount);
-            markCount = updatedCounts[0];
-            colorCount = updatedCounts[1];
+        positions.addAll(checkDirection(pawn, pos, dir2, checkColor));
 
-            if (hasWinningSequence(markCount, colorCount)) {
-                return true;
-            }
+        positions.sort((p1, p2) -> {
+            int rowCompare = Integer.compare(p1.row(), p2.row());
+            return rowCompare != 0 ? rowCompare : Integer.compare(p1.column(), p2.column());
+        });
+
+        return positions;
+    }
+
+        /**
+     * Checks a sequence of pawns in a specific direction and returns a list of matching positions.
+     *
+     * @param pawn       The pawn to check for a sequence.
+     * @param pos        The position of the pawn on the board.
+     * @param dir1       The first direction to check for a sequence.
+     * @param dir2       The second direction to check for a sequence.
+     * @param checkColor Whether to check for matching colors or marks.
+     * @return A list of positions that form a sequence of 4 or more consecutive pawns.
+     */
+    private List<Position> checkDirection(Pawn pawn, Position pos, Direction dir, boolean checkColor) {
+        List<Position> positions = new ArrayList<>();
+        int currentRow = pos.row() + dir.getDeltaX();
+        int currentCol = pos.column() + dir.getDeltaY();
+        Position currentPosition = new Position(currentRow, currentCol);
+
+        while (isInBounds(currentPosition)) {
+            Token token = board[currentRow][currentCol];
+            if (!isValidPawn(token)) break;
+
+            Pawn currentPawn = (Pawn) token;
+            if (!isPawnMatch(currentPawn, pawn, checkColor)) break;
+
+            positions.add(new Position(currentRow, currentCol));
+            currentRow += dir.getDeltaX();
+            currentCol += dir.getDeltaY();
+            currentPosition = new Position(currentRow, currentCol);
         }
-        return false;
+
+        return positions;
     }
 
     private boolean isValidPawn(Token token) {
-        return token != null && !(isTotem(token));
+        return token != null && !isTotem(token);
     }
-    private int[] updateCounters(Token currentToken, Pawn referencePawn, int markCount, int colorCount) {
-        if (!(currentToken instanceof Pawn currentPawn)) {
-            return new int[]{markCount, colorCount};
-        }
-        markCount = (currentPawn.getMark() == referencePawn.getMark()) ? markCount + 1 : 0;
-
-        colorCount = (currentPawn.getColor() == referencePawn.getColor()) ? colorCount + 1 : 0;
-
-        return new int[]{markCount, colorCount};
+    private boolean isPawnMatch(Pawn currentPawn, Pawn referencePawn, boolean checkColor) {
+        return checkColor ?
+                currentPawn.getColor() == referencePawn.getColor() :
+                currentPawn.getMark() == referencePawn.getMark();
     }
-
-    public Token getToken(Position position){
+    public List<Position> getWinnigPositions() {
+        return winningPositions;
+    }
+    public Token getToken(Position position) {
         return board[position.row()][position.column()];
     }
-    public Totem getTotem(Position position){
+
+    public Totem getTotem(Position position) {
         return (Totem) board[position.row()][position.column()];
     }
 
-    /**
-     * Checks if either counter has reached the winning sequence length (4)
-     */
-    private boolean hasWinningSequence(int markCount, int colorCount) {
-        final int WINNING_SEQUENCE = 4;
-        return markCount == WINNING_SEQUENCE || colorCount == WINNING_SEQUENCE;
-    }
-    public int getSize(){
+    public int getSize() {
         return size;
     }
 }

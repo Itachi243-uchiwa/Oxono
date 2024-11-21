@@ -45,74 +45,77 @@ public class ConsoleView {
         return scanner.nextLine();
     }
 
-        public void showErrorMessage(String message) {
-            System.out.println("Erreur : " + message);
-        }
+    public void showErrorMessage(String message) {
+        System.out.println("Erreur : " + message);
+    }
 
-        public void showWinMessage(Player player) {
-            System.out.println("Le joueur " + player.getColor() + " a gagné !");
-        }
+    public void showWinMessage(Player player) {
+        System.out.println("Le joueur " + player.getColor() + " a gagné !");
+    }
 
-        public void showDrawMessage() {
-            System.out.println("Le plateau est plein, match nul !");
-        }
+    public void showDrawMessage() {
+        System.out.println("Le plateau est plein, match nul !");
+    }
 
-        public void showRestartMessage() {
-            System.out.println("Le jeu a été redémarré.");
-        }
+    public void showRestartMessage() {
+        System.out.println("Le jeu a été redémarré.");
+    }
 
-        public void showUndoMessage() {
-            System.out.println("Dernier coup annulé.");
-        }
+    public void showUndoMessage() {
+        System.out.println("Dernier coup annulé.");
+    }
 
-        public void showRedoMessage() {
-            System.out.println("Dernier coup refait.");
-        }
+    public void showRedoMessage() {
+        System.out.println("Dernier coup refait.");
+    }
 
-        public void showQuitMessage() {
-            System.out.println("Merci d'avoir joué ! À bientôt.");
-        }
-        public void showSurrenderMessage() {
-            System.out.println("Le joueur a abandonné la partie.");
-        }
+    public void showQuitMessage() {
+        System.out.println("Merci d'avoir joué ! À bientôt.");
+    }
 
-        public String getCommandInput() {
-            System.out.println("Entrez une commande (start, restart, quit, undo, redo) ou appuyez sur Entrée pour continuer : ");
-            return scanner.nextLine().trim();
-        }
+    public void showSurrenderMessage() {
+        System.out.println("Le joueur a abandonné la partie.");
+    }
 
-        public int getAIChoice() {
-            while (true) {
-                System.out.println("Choisissez Jouer soit avec un Humain ou avec L'IA :");
-                System.out.println("1. Humain");
-                System.out.println("2. RandomAI");
-                System.out.println("3. MinMaxAI");
-                System.out.println("4. AI vs AI");
-                try {
-                    int choice = Integer.parseInt(scanner.nextLine());
-                    if (choice == 1 || choice == 2 || choice == 3 || choice == 4) {
-                        return choice;
-                    }
-                    System.out.println("Veuillez entrer 1, 2, 3 ou 4.");
-                } catch (NumberFormatException e) {
-                    System.out.println("Veuillez entrer un nombre valide.");
+    public String getCommandInput() {
+        System.out.println("Entrez une commande (start, restart, quit, undo, redo) ou appuyez sur Entrée pour continuer : ");
+        return scanner.nextLine().trim();
+    }
+
+    public int getAIChoice() {
+        while (true) {
+            System.out.println("Choisissez Jouer soit avec un Humain ou avec L'IA :");
+            System.out.println("1. Humain");
+            System.out.println("2. RandomAI");
+            System.out.println("3. MinMaxAI");
+            System.out.println("4. AI vs AI");
+            try {
+                int choice = Integer.parseInt(scanner.nextLine());
+                if (choice == 1 || choice == 2 || choice == 3 || choice == 4) {
+                    return choice;
                 }
+                System.out.println("Veuillez entrer 1, 2, 3 ou 4.");
+            } catch (NumberFormatException e) {
+                System.out.println("Veuillez entrer un nombre valide.");
             }
         }
-        public int getBoardSize() {
-            while (true) {
-                System.out.println("Choisissez la taille du plateau (entre 6 et 12) :");
-                try {
-                    int size = Integer.parseInt(scanner.nextLine());
-                    if (size >= 6 && size <= 12) {
-                        return size;
-                    }
-                    System.out.println("Veuillez entrer une taille valide entre 6 et 12.");
-                } catch (NumberFormatException e) {
-                    System.out.println("Veuillez entrer un nombre valide.");
+    }
+
+    public int getBoardSize() {
+        while (true) {
+            System.out.println("Choisissez la taille du plateau (entre 6 et 12) :");
+            try {
+                int size = Integer.parseInt(scanner.nextLine());
+                if (size >= 6 && size <= 12) {
+                    return size;
                 }
+                System.out.println("Veuillez entrer une taille valide entre 6 et 12.");
+            } catch (NumberFormatException e) {
+                System.out.println("Veuillez entrer un nombre valide.");
             }
         }
+    }
+
     public void displayHelp() {
         System.out.println("=== OXONO - Guide de jeu ===\n");
 
@@ -158,32 +161,32 @@ public class ConsoleView {
 
 
     public void displayMenu() {
-            System.out.println("====================== BIENVENUE DANS OXONO =========================");
-            System.out.println("Instructions du jeu:");
-            System.out.println("1. Placez vos totems (X ou O) sur le plateau en entrant la commande : X 2 3");
-            System.out.println("2. Placez vos pions (RX ou RO) après le totem, avec la commande : RX 2 3");
-            System.out.println("3. Commandes spéciales disponibles :");
-            System.out.println("   - start : Commence une nouvelle partie");
-            System.out.println("   - restart : Redémarre la partie actuelle");
-            System.out.println("   - undo : Annule le dernier coup");
-            System.out.println("   - redo : Répète le dernier coup annulé");
-            System.out.println("   - surrender : Pour abandonner la partie");
-            System.out.println("   - help : Affiche un guide de jeu");
-            System.out.println("   - quit : Quitte le jeu");
-            System.out.println("Bon jeu !");
-            System.out.println("======================================================================");
-            System.out.println();
-        }
+        System.out.println("====================== BIENVENUE DANS OXONO =========================");
+        System.out.println("Instructions du jeu:");
+        System.out.println("1. Placez vos totems (X ou O) sur le plateau en entrant la commande : X 2 3");
+        System.out.println("2. Placez vos pions (RX ou RO) après le totem, avec la commande : RX 2 3");
+        System.out.println("3. Commandes spéciales disponibles :");
+        System.out.println("   - start : Commence une nouvelle partie");
+        System.out.println("   - restart : Redémarre la partie actuelle");
+        System.out.println("   - undo : Annule le dernier coup");
+        System.out.println("   - redo : Répète le dernier coup annulé");
+        System.out.println("   - surrender : Pour abandonner la partie");
+        System.out.println("   - help : Affiche un guide de jeu");
+        System.out.println("   - quit : Quitte le jeu");
+        System.out.println("Bon jeu !");
+        System.out.println("======================================================================");
+        System.out.println();
+    }
 
     public void displayRack(int[] pawnsRemaining) {
 
 
-            System.out.println("Player Pink ======================================== Player Black :");
-            System.out.println();
-            System.out.println("Pawns - X: " + pawnsRemaining[0] + "                          " + "Pawns - X: " + pawnsRemaining[2]);
-            System.out.println("Pawns - O: " + pawnsRemaining[1] + "                          " + "Pawns - O: " + pawnsRemaining[3]);
-            System.out.println();
-        }
+        System.out.println("Player Pink ======================================== Player Black :");
+        System.out.println();
+        System.out.println("Pawns - X: " + pawnsRemaining[0] + "                          " + "Pawns - X: " + pawnsRemaining[2]);
+        System.out.println("Pawns - O: " + pawnsRemaining[1] + "                          " + "Pawns - O: " + pawnsRemaining[3]);
+        System.out.println();
+    }
 
 }
 

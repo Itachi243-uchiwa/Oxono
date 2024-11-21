@@ -1,10 +1,10 @@
 package dev3.projet.oxono_g63888.model.strategy;
 
-
-import dev3.projet.oxono_g63888.model.*;
+import dev3.projet.oxono_g63888.model.AIPlayer;
+import dev3.projet.oxono_g63888.model.Board;
 
 public class MinMaxAIStrategy implements AIStrategy {
-        private static final int MAX_DEPTH = 3;
+    private static final int MAX_DEPTH = 3;
 
     @Override
     public Move getNextMove(Board board) {
@@ -12,7 +12,7 @@ public class MinMaxAIStrategy implements AIStrategy {
     }
 
     @Override
-    public Move getNextTotemMove(Board board) {
+    public Move getNextTotemMove(Board board, AIPlayer ai) {
         return null;
     }
 }

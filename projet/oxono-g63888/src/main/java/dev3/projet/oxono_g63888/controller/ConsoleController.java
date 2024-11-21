@@ -148,7 +148,7 @@ public class ConsoleController implements Observer {
     }
 
     private void playGameLoop() {
-        do{
+        do {
 
             if (game.isCurrentPlayerAI()) {
                 playAITurn();
@@ -165,7 +165,6 @@ public class ConsoleController implements Observer {
     }
 
     private void playAITurn() {
-        game.setGameState(GameState.AI_TURN);
         System.out.println("C'est au tour de l'IA " + game.getCurrentPlayer().getColor() +
                 ". Appuyez sur Entrée pour que l'IA joue.");
 
@@ -192,14 +191,14 @@ public class ConsoleController implements Observer {
         if (game.isUndoRedoInProgress()) {
             return;
         }
-        if (game.getGameState() != GameState.GAME_OVER){
+        if (game.getGameState() != GameState.GAME_OVER) {
 
-        if (game.getGameState() == GameState.WAITING_FOR_TOTEM){
-            processPlayerInput("totem");
-        }
-        if (game.getGameState() == GameState.WAITING_FOR_PAWN) {
-            processPlayerInput("pion");
-        }
+            if (game.getGameState() == GameState.WAITING_FOR_TOTEM) {
+                processPlayerInput("totem");
+            }
+            if (game.getGameState() == GameState.WAITING_FOR_PAWN) {
+                processPlayerInput("pion");
+            }
 
         }
 
@@ -252,31 +251,32 @@ public class ConsoleController implements Observer {
             view.showDrawMessage();
         }
     }
+
     @Override
     public void update(Game game, OxonoEvent event) {
         switch (event.getEvent()) {
-                case GAME_START:
-                    view.displayMenu();
-                    break;
-                case MOVE_TOTEM:
-                    System.out.println("Move totem");
-                    break;
-                case PLACE_PAWN:
+            case GAME_START:
+                view.displayMenu();
+                break;
+            case MOVE_TOTEM:
+                System.out.println("Move totem");
+                break;
+            case PLACE_PAWN:
 
-                    break;
-                case WIN:
-                    view.showWinMessage(game.getCurrentPlayer());
-                    break;
-                case DRAW:
-                    view.showDrawMessage();
-                    break;
-                case UNDO:
-                    view.showUndoMessage();
-                    break;
-                case REDO:
-                    view.showRedoMessage();
-                    break;
-            }
+                break;
+            case WIN:
+                view.showWinMessage(game.getCurrentPlayer());
+                break;
+            case DRAW:
+                view.showDrawMessage();
+                break;
+            case UNDO:
+                view.showUndoMessage();
+                break;
+            case REDO:
+                view.showRedoMessage();
+                break;
+        }
         view.displayBoard(game.getBoard());
         view.displayRack(game.getRemainingPawns());
     }

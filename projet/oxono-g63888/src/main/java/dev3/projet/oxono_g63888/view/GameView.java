@@ -2,16 +2,24 @@ package dev3.projet.oxono_g63888.view;
 
 import dev3.projet.oxono_g63888.controller.GameController;
 import dev3.projet.oxono_g63888.model.*;
+import javafx.animation.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.effect.Glow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public class GameView{
+public class GameView {
     private GridPane boardGrid;
     private VBox root;
     private Label statusLabel;
@@ -21,18 +29,14 @@ public class GameView{
     private Button surrenderButton;
     private VBox pinkPlayerRack;
     private VBox blackPlayerRack;
-    private Position selectedPosition;
     private GameController controller;
     private Map<Position, StackPane> cellMap;
     private Button quitButton;
-    private Button aiMoveButton;
-    private TokenGraphic tokenFactory;
+    private Button aiMove;
 
     public GameView() {
-        tokenFactory = new TokenGraphic(Color.PINK, TokenGraphic.PieceType.PAWN);
         cellMap = new HashMap<>();
         createView();
-        root.getStylesheets().add(getClass().getResource("/styles/styles.css").toExternalForm());
     }
 
     public void setController(GameController controller) {
@@ -76,14 +80,14 @@ public class GameView{
         redoButton = new Button("Refaire");
         surrenderButton = new Button("Abandonner");
         quitButton = new Button("Quitter");
-        aiMoveButton = new Button("IA");
+        aiMove = new Button("IA");
 
 
-        for (Button btn : Arrays.asList(undoButton, redoButton, surrenderButton, quitButton,aiMoveButton)) {
+        for (Button btn : Arrays.asList(undoButton, redoButton, surrenderButton, quitButton, aiMove)) {
             btn.getStyleClass().add("game-button");
         }
 
-        header.getChildren().addAll(playerTurnLabel, undoButton, redoButton, surrenderButton, quitButton,aiMoveButton);
+        header.getChildren().addAll(playerTurnLabel, undoButton, redoButton, surrenderButton, quitButton, aiMove);
         return header;
     }
 
@@ -133,32 +137,30 @@ public class GameView{
         section.getChildren().add(nameLabel);
         return section;
     }
+
     public Button getQuitButton() {
         return quitButton;
-    }
-    public Button getAiMoveButton() {
-        return aiMoveButton;
     }
 
     /**
      * Met à jour le plateau de jeu
      */
-    public void updateBoard(Board board) {
+    public void updateBoard(Game game) {
         boardGrid.getChildren().clear();
         cellMap.clear();
 
-        for (int i = 0; i < board.getSize(); i++) {
-            for (int j = 0; j < board.getSize(); j++) {
+        for (int i = 0; i < Game.size(); i++) {
+            for (int j = 0; j < Game.size(); j++) {
                 StackPane cell = createBoardCell();
                 Position pos = new Position(i, j);
-                Token token = board.getToken(pos);
+                Token token = Game.getToken(pos);
 
                 if (token != null) {
                     if (token instanceof Totem) {
-                        TokenGraphic totemFX = tokenFactory.createTotemFX((Totem) token);
+                        TokenGraphic totemFX = createTotemFX((Totem) token);
                         cell.getChildren().add(totemFX);
                     } else {
-                        TokenGraphic pawnFX = tokenFactory.createPawnFX((Pawn) token);
+                        TokenGraphic pawnFX = createPawnFX((Pawn) token);
                         cell.getChildren().add(pawnFX);
                     }
                 }
@@ -173,26 +175,65 @@ public class GameView{
                 cellMap.put(pos, cell);
             }
         }
+    }
 
-        if (selectedPosition != null) {
-            List<Position> possibleMoves = board.getMovesPossibles(selectedPosition);
-            highlightPossibleMoves(possibleMoves, "valid-move");
-        }
+    public void updatePawn(Position position, Pawn pawn) {
+        clearColor("hover-move");
+        StackPane cell = cellMap.get(position);
+
+        TokenGraphic pawnFx = createPawnFX(pawn);
+        GameAnimation.addPawnDropAnimation(pawnFx);
+
+        cell.getChildren().setAll(pawnFx);
+        cellMap.put(position, cell);
+    }
+
+    public void updateTotem(Position position, Totem totem, Position oldpos) {
+        clearColor("valid-move");
+
+        StackPane oldCell = cellMap.get(oldpos);
+        oldCell.getChildren().clear();
+
+        StackPane newCell = cellMap.get(position);
+        TokenGraphic totemFX = createTotemFX(totem);
+
+        GameAnimation.addTotemBounceAnimation(totemFX);
+        newCell.getChildren().setAll(totemFX);
+        cellMap.put(oldpos, oldCell);
+        cellMap.put(position, newCell);
+    }
+
+
+    public void clearColor(String color) {
+        cellMap.values().forEach(cell ->
+                cell.getStyleClass().removeIf(style -> style.equals(color))
+        );
     }
 
     /**
      * Crée un jeton visuel pour un pion
      */
+    public TokenGraphic createPawnFX(Pawn pawn) {
+        Color color = pawn.getColor() == ColorPawn.PINK ? Color.DEEPPINK : Color.BLACK;
+        TokenGraphic pawnFX = new TokenGraphic(color, TokenGraphic.PieceType.PAWN);
+        pawnFX.setMark(pawn.getMark());
+        return pawnFX;
+    }
 
+    /**
+     * Crée un jeton visuel pour un totem
+     */
+    public TokenGraphic createTotemFX(Totem totem) {
+        TokenGraphic totemFX = new TokenGraphic(Color.CYAN, TokenGraphic.PieceType.TOTEM);
+        totemFX.setMark(totem.getMark());
+        return totemFX;
+    }
 
     /**
      * Met en surbrillance les mouvements possibles
      */
     public void highlightPossibleMoves(List<Position> positions, String color) {
-        cellMap.values().forEach(cell ->
-                cell.getStyleClass().removeIf(style -> style.equals(color))
-        );
-
+        clearColor(color);
         positions.forEach(pos -> {
             StackPane cell = cellMap.get(pos);
             if (cell != null) {
@@ -200,6 +241,7 @@ public class GameView{
             }
         });
     }
+
     /**
      * Crée une cellule du plateau
      */
@@ -215,6 +257,13 @@ public class GameView{
     public void updateRacks(int[] remainingPawns) {
         updatePlayerRack(pinkPlayerRack, remainingPawns[0], remainingPawns[1], ColorPawn.PINK);
         updatePlayerRack(blackPlayerRack, remainingPawns[2], remainingPawns[3], ColorPawn.BLACK);
+    }
+
+    public void clearCell(Position position) {
+        StackPane cell = cellMap.get(position);
+        if (cell != null) {
+            cell.getChildren().clear();  // Efface tout le contenu de la cellule
+        }
     }
 
     /**
@@ -238,11 +287,12 @@ public class GameView{
 
         for (int i = 0; i < xPawns; i++) {
             Pawn pawn = new Pawn(color, Mark.X);
-            TokenGraphic pawnFX = tokenFactory.createPawnFX(pawn);
+            TokenGraphic pawnFX = createPawnFX(pawn);
             xPawnsBox.getChildren().add(pawnFX);
         }
         xSection.getChildren().addAll(xLabel, xPawnsBox);
 
+        // Crée la ligne des pions O
         VBox oSection = new VBox(5);
         oSection.setAlignment(Pos.CENTER);
         Label oLabel = new Label("Pions O");
@@ -254,16 +304,12 @@ public class GameView{
 
         for (int i = 0; i < oPawns; i++) {
             Pawn pawn = new Pawn(color, Mark.O);
-            TokenGraphic pawnFX = tokenFactory.createPawnFX(pawn);
+            TokenGraphic pawnFX = createPawnFX(pawn);
             oPawnsBox.getChildren().add(pawnFX);
         }
         oSection.getChildren().addAll(oLabel, oPawnsBox);
 
         rack.getChildren().addAll(xSection, oSection);
-    }
-
-    public void setSelectedPosition(Position position) {
-        this.selectedPosition = position;
     }
 
     public void setStatus(String message) {
@@ -286,5 +332,15 @@ public class GameView{
         return surrenderButton;
     }
 
+    public Button getAiMoveButton() {
+        return aiMove;
+    }
+
+    public void setCurrentPlayer(String message) {
+        playerTurnLabel.setText(message);
+    }
+    public void addVictoryAnimation(List<Position> pos){
+         GameAnimation.addVictoryAnimation(pos, cellMap);
+    }
 
 }

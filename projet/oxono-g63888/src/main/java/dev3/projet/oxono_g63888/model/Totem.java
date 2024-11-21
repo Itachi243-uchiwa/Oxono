@@ -1,8 +1,5 @@
 package dev3.projet.oxono_g63888.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Totem extends Token {
 
 

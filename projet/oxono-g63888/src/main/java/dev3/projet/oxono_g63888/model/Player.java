@@ -29,6 +29,7 @@ public class Player {
 
     /**
      * Returns the color of the player.
+     *
      * @return The color associated with the player.
      */
     public ColorPawn getColor() {
@@ -37,6 +38,7 @@ public class Player {
 
     /**
      * Checks if the player has at least one pawn of the specified type.
+     *
      * @param mark The type of pawn (Mark.X or Mark.O) to check for.
      * @return true if the player has a pawn of this type, false otherwise.
      */
@@ -51,6 +53,7 @@ public class Player {
 
     /**
      * Uses a pawn of the specified type by removing the first pawn found of that type.
+     *
      * @param mark The type of pawn to use.
      */
     public void usePawn(Mark mark) {
@@ -63,6 +66,7 @@ public class Player {
 
     /**
      * Adds a pawn of the specified type to the player's stack of pawns, simulating the return of a pawn.
+     *
      * @param mark The type of pawn to add.
      */
     public void returnPawn(Mark mark) {
@@ -75,6 +79,7 @@ public class Player {
 
     /**
      * Counts the remaining pawns of a given type in the player's stack of pawns.
+     *
      * @param mark The type of pawn (Mark.X or Mark.O) to count.
      * @return The number of pawns of this type.
      */
@@ -87,16 +92,17 @@ public class Player {
         return 0;
     }
 
+    public boolean dontHaveAnyPawns() {
+        return pawnsX.isEmpty() && pawnsO.isEmpty();
+    }
+
     /**
      * Returns a string representation of the player's state.
+     *
      * @return A string containing player information.
      */
     @Override
     public String toString() {
-        return "Player{" +
-                "color=" + color +
-                ", pawnsX=" + pawnsX.size() +
-                ", pawnsO=" + pawnsO.size() +
-                '}';
+        return this.getClass().getSimpleName() + " " + color;
     }
 }

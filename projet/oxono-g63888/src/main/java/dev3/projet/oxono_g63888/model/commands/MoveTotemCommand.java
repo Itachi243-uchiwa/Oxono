@@ -36,16 +36,20 @@ public class MoveTotemCommand implements Command {
     public void unexecute() throws OxonoException {
         board.moveTotem(totem, oldPosition);
     }
+
     @Override
     public Mark getMovedMark() {
-        return board.getToken(newPosition).getMark();
+        return totem.getMark();
     }
+
     public Position getNewPosition() {
         return newPosition;
     }
+
     public Position getOldPosition() {
         return oldPosition;
     }
+
     public Totem getTotem() {
         return totem;
     }

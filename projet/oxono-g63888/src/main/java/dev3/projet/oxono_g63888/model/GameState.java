@@ -5,5 +5,6 @@ public enum GameState {
     WAITING_FOR_TOTEM,
     WAITING_FOR_PAWN,
     GAME_OVER,
-    AI_TURN
+    AI_TURN,
+    SURRENDER
 }
