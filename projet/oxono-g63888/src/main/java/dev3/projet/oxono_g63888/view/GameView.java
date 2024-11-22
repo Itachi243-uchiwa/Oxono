@@ -153,7 +153,7 @@ public class GameView {
             for (int j = 0; j < Game.size(); j++) {
                 StackPane cell = createBoardCell();
                 Position pos = new Position(i, j);
-                Token token = Game.getToken(pos);
+                Token token = game.getToken(pos);
 
                 if (token != null) {
                     if (token instanceof Totem) {

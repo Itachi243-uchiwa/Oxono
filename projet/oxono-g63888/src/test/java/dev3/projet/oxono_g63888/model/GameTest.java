@@ -35,15 +35,6 @@ import java.util.List;
         }
 
         @Test
-        void testSwitchPlayer() {
-            game.initializeGame(2, 2);
-            Player initialPlayer = game.getCurrentPlayer();
-
-            game.switchPlayer();
-            assertNotEquals(initialPlayer, game.getCurrentPlayer());
-        }
-
-        @Test
         void testCanUndo_BeforeAnyMove() {
             game.initializeGame(6, 2);
             assertFalse(game.canUndo());

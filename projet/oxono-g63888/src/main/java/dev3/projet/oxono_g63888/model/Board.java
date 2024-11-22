@@ -123,6 +123,7 @@ public class Board {
 
 
 
+
     /**
      * Inserts a token at the specified position if it's empty and within bounds
      *
@@ -274,7 +275,6 @@ public class Board {
     public boolean isTotem(Token token) {
         return token instanceof Totem;
     }
-
 
   
     /**

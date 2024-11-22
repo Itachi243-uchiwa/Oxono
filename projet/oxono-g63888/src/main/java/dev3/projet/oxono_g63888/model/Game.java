@@ -106,17 +106,17 @@ public class Game implements Observable {
      * @throws OxonoException If the current player is not an AI player or if the totem move is invalid.
      */
     private void executeTotemMove(Move totemMove) throws OxonoException {
-        Token token = totemMove.token();
+        Totem totemAI = (Totem) totemMove.token();
         Position newPosTotem = totemMove.movePosition();
-        Position totemPos = getTotemPositionForMove(token.getMark());
+        Position totemPos = getTotemPositionForMove(totemAI.getMark());
 
         if (!board.isValidMove(newPosTotem, totemPos)) {
             throw new OxonoException("Invalid totem move");
         }
-
-        Command command = new MoveTotemCommand(board, (Totem) token, newPosTotem, totemPos);
+        board.moveTotem(totemAI, newPosTotem);
+        Command command = new MoveTotemCommand(board, totemAI, newPosTotem, totemPos);
         invoker.executeCommand(command);
-        lastTotemPlay = (Totem) token;
+        lastTotemPlay = totemAI;
         updateTotemPosition(lastTotemPlay, newPosTotem);
 
         notifyObservers(new OxonoEvent(ObservableEvent.MOVE_TOTEM)
@@ -145,7 +145,7 @@ public class Game implements Observable {
         if (!board.isValidInsertion(pawnPos, totemPos)) {
             throw new OxonoException("Invalid pawn move");
         }
-
+        board.insertPawn((Pawn) token, pawnPos,totemPos);
         Command command = new InsertPawnCommand(board, (Pawn) token, currentPlayer, totemPos, pawnPos);
         invoker.executeCommand(command);
         lastPawnPosition = pawnPos;
@@ -155,6 +155,9 @@ public class Game implements Observable {
                 .addData("newPosition", pawnPos)
                 .addData("oldPosition", lastPawnPosition)
         );
+        if (!checkWinCondition() || !isDraw()){
+            switchPlayer();
+        }
     }
 
     private Position getTotemPositionForMove(Mark mark) {
@@ -232,6 +235,9 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
                     .addData("pawn", pawn)
                     .addData("oldPosition", lastPawnPosition)
                     .addData("newPosition", newPosition));
+            if (!checkWinCondition() || !isDraw()){
+                switchPlayer();
+            }
         }
 
     } catch (IllegalArgumentException e) {
@@ -245,7 +251,7 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
         if (!board.isValidMove(newPosition, actualTotemPos)) {
             throw new OxonoException("Invalid totem move");
         }
-
+        board.moveTotem(totem, newPosition);
         lastTotemPlay = totem;
         updateTotemPosition(totem, newPosition);
         return new MoveTotemCommand(board, totem, newPosition, actualTotemPos);
@@ -259,38 +265,39 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
         if (!board.isValidInsertion(newPosition, actualTotemPos)) {
             throw new OxonoException("Invalid Pawn move");
         }
-        lastPawnPosition = newPosition;
         Pawn pawn = new Pawn(currentPlayer.getColor(), mark);
+        board.insertPawn(pawn, newPosition,actualTotemPos);
+        lastPawnPosition = newPosition;
+
         return new InsertPawnCommand(board, pawn, currentPlayer, actualTotemPos, newPosition);
     }
 
 
     /**
- * Checks if the current game state satisfies the win condition.
- * This method evaluates the last pawn placement to determine if it results in a win.
- * If a win is detected, it updates the game state and notifies observers.
- *
- * @return true if the current state is a winning condition, false otherwise.
- */
-public boolean checkWinCondition() {
-    Token token = board.getToken(lastPawnPosition);
-    if (!board.isTotem(token)) {
-        boolean isWin = board.checkWin((Pawn) token, lastPawnPosition);
-        if (isWin) {
-            state = GameState.GAME_OVER;
-            notifyObservers(new OxonoEvent(ObservableEvent.WIN)
-                    .addData("winner", currentPlayer)
-                    .addData("winningPosition", board.getWinnigPositions())
-            );
+     * Checks if the current game state satisfies the win condition.
+     * This method evaluates the last pawn placement to determine if it results in a win.
+     * If a win is detected, it updates the game state and notifies observers.
+     *
+     * @return true if the current state is a winning condition, false otherwise.
+     */
+    public boolean checkWinCondition() {
+        Token token = board.getToken(lastPawnPosition);
+        if (!board.isTotem(token)) {
+            boolean isWin = board.checkWin((Pawn) token, lastPawnPosition);
+            if (isWin) {
+                state = GameState.GAME_OVER;
+                notifyObservers(new OxonoEvent(ObservableEvent.WIN)
+                        .addData("winner", currentPlayer)
+                        .addData("winningPosition", board.getWinnigPositions())
+                );
+            }
+
+            return isWin;
         }
-
-        return isWin;
+        return false;
     }
-    return false;
-}
 
-
-    public void switchPlayer() {
+    private void switchPlayer() {
         currentPlayer = (currentPlayer == players[0]) ? players[1] : players[0];
     }
 
@@ -325,7 +332,7 @@ public boolean checkWinCondition() {
                 }
 
                 state = GameState.WAITING_FOR_PAWN;
-
+                board.removePawn(lastPawnPosition);
                 notifyObservers(new OxonoEvent(ObservableEvent.UNDO)
                         .addData("pawn", pawnCommand.getPawn())
                         .addData("currentPlayer", currentPlayer)
@@ -334,6 +341,7 @@ public boolean checkWinCondition() {
                 Position oldPosition = totemCommand.getOldPosition();
                 Totem totem = totemCommand.getTotem();
                 updateTotemPosition(totem, oldPosition);
+                board.moveTotem(totem, oldPosition);
                 lastTotemPlay = null;
 
                 state = GameState.WAITING_FOR_TOTEM;
@@ -363,7 +371,7 @@ public boolean checkWinCondition() {
                 lastTotemPlay = totemCommand.getTotem();
                 Position newPosition = totemCommand.getNewPosition();
                 updateTotemPosition(lastTotemPlay, newPosition);
-
+                board.moveTotem(lastTotemPlay, newPosition);
                 state = GameState.WAITING_FOR_PAWN;
 
                 notifyObservers(new OxonoEvent(ObservableEvent.REDO)
@@ -371,7 +379,9 @@ public boolean checkWinCondition() {
                         .addData("totem", lastTotemPlay)
                         .addData("newPosition", newPosition));
             } else if (command instanceof InsertPawnCommand pawnCommand) {
+                Pawn pawn = pawnCommand.getPawn();
                 lastPawnPosition = pawnCommand.getPawnPosition();
+                board.insertPawn(pawn, lastPawnPosition, getTotemPositionForMove(lastTotemPlay.getMark()));
                 switchPlayer();
 
                 state = GameState.WAITING_FOR_TOTEM;
@@ -402,12 +412,6 @@ public boolean checkWinCondition() {
     public boolean isUndoRedoInProgress() {
         return isUndoRedoInProgress;
     }
-
-
-    public Board getBoard() {
-        return board;
-    }
-
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
@@ -461,8 +465,11 @@ public boolean checkWinCondition() {
     public static int size(){
         return sizeBoard;
     }
-    public static Token getToken(Position pos) {
+    public Token getToken(Position pos) {
       return board.getToken(pos);
+    }
+    public Mark getMarkTotem(Position pos) {
+        return board.getTotem(pos).getMark();
     }
     private Player getOpponent() {
         return currentPlayer == players[0] ? players[1] : players[0];

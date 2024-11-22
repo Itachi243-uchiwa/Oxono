@@ -15,14 +15,13 @@ public class ConsoleView {
         return scanner.nextLine();
     }
 
-    public void displayBoard(Board board) {
-        for (int i = 0; i < board.getSize(); i++) {
-            System.out.println("+---".repeat(board.getSize()) + "+");
-            for (int j = 0; j < board.getSize(); j++) {
-                Token token = board.getToken(new Position(i, j));
+    public void displayBoard(Game game) {
+        for (int i = 0; i < Game.size(); i++) {
+            System.out.println("+---".repeat(Game.size()) + "+");
+            for (int j = 0; j <Game.size(); j++) {
+                Token token = game.getToken(new Position(i, j));
                 if (token != null) {
-                    if (board.isTotem(token)) {
-                        Totem totem = (Totem) token;
+                    if (token instanceof Totem totem) {
                         System.out.print("| " + totem.toString() + " ");
                     } else {
                         Pawn pawn = (Pawn) token;
@@ -34,7 +33,7 @@ public class ConsoleView {
             }
             System.out.println("|");
         }
-        System.out.println("+---".repeat(board.getSize()) + "+");
+        System.out.println("+---".repeat(Game.size()) + "+");
 
         System.out.println();
     }

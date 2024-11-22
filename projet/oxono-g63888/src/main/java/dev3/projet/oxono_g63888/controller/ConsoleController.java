@@ -156,9 +156,6 @@ public class ConsoleController implements Observer {
                 playPlayerTurn();
             }
 
-            if (!game.checkWinCondition() && !game.isDraw()) {
-                switchToNextPlayer();
-            }
         } while (!game.isDraw() && !game.checkWinCondition());
 
         handleGameEnd();
@@ -239,12 +236,8 @@ public class ConsoleController implements Observer {
         }
     }
 
-    private void switchToNextPlayer() {
-        game.switchPlayer();
-    }
-
     private void handleGameEnd() {
-        view.displayBoard(game.getBoard());
+        view.displayBoard(game);
         if (game.checkWinCondition()) {
             view.showWinMessage(game.getCurrentPlayer());
         } else {
@@ -277,7 +270,7 @@ public class ConsoleController implements Observer {
                 view.showRedoMessage();
                 break;
         }
-        view.displayBoard(game.getBoard());
+        view.displayBoard(game);
         view.displayRack(game.getRemainingPawns());
     }
 

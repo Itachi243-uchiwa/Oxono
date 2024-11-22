@@ -26,7 +26,7 @@ public class MoveTotemCommand implements Command {
      */
     @Override
     public void execute() throws OxonoException {
-        board.moveTotem(totem, newPosition);
+
     }
 
     /**
@@ -34,7 +34,7 @@ public class MoveTotemCommand implements Command {
      */
     @Override
     public void unexecute() throws OxonoException {
-        board.moveTotem(totem, oldPosition);
+
     }
 
     @Override

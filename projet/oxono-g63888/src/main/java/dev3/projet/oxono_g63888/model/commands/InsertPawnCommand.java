@@ -22,14 +22,12 @@ public class InsertPawnCommand implements Command {
     public void execute() {
         if (player.hasPawn(pawn.getMark())) {
             player.usePawn(pawn.getMark());
-            board.insertPawn(pawn, pawnPosition, totemPosition);
         }
     }
 
     @Override
     public void unexecute() {
         player.returnPawn(pawn.getMark());
-        board.removePawn(pawnPosition);
     }
 
     @Override

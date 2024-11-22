@@ -95,11 +95,6 @@ public class GameController implements Observer {
     private void performAIMove() {
         if (gameOver || !game.isCurrentPlayerAI()) return;
         game.playAITurn();
-        if (!(game.checkWinCondition() || game.isDraw())) {
-            game.switchPlayer();
-            updateAIButtonState();
-        }
-
     }
 
     public void handleCellClick(Position pos) {
@@ -107,7 +102,7 @@ public class GameController implements Observer {
 
         try {
             clickedPos = pos;
-            Token token = game.getBoard().getToken(clickedPos);
+            Token token = game.getToken(clickedPos);
             boolean pawnMoved = false;
 
             if (token instanceof Totem) {
@@ -124,10 +119,11 @@ public class GameController implements Observer {
                 if (pawnMoved) {
                     selectedTotemPosition = null;
                     isPlacingTotem = false;
+                    if (game.isCurrentPlayerAI()) {
+                        updateAIButtonState();
+                    }
                 }
             }
-
-            checkGameStateAfterMove(pawnMoved);
 
         } catch (OxonoException e) {
             handleMoveError(e.getMessage());
@@ -144,11 +140,8 @@ public class GameController implements Observer {
     }
 
     private void handleTotemMovement(Position pos) throws OxonoException {
-        if (!game.getBoard().isValidMove(clickedPos, selectedTotemPosition)) {
-            throw new OxonoException("Mouvement invalide");
-        }
-
-        game.processTotemInput(game.getBoard().getTotem(selectedTotemPosition).getMark() + " " + pos.row() + " " + pos.column());
+        Mark mark = game.getMarkTotem(selectedTotemPosition);
+        game.processTotemInput( mark + " " + pos.row() + " " + pos.column());
         isPlacingTotem = false;
         selectedTotemPosition = clickedPos;
         List<Position> positions = game.positionsInsert(clickedPos);
@@ -157,23 +150,9 @@ public class GameController implements Observer {
     }
 
     private boolean handlePawnPlacement(Position pos) throws OxonoException {
-        if (game.getBoard().isValidInsertion(clickedPos, selectedTotemPosition)) {
-            game.processPawnInput("R" + game.getBoard().getTotem(selectedTotemPosition).getMark() + " " + pos.row() + " " + pos.column());
-            return true;
-        }
-        return false;
-    }
-
-    private void checkGameStateAfterMove(boolean pawnMoved) {
-
-        if (pawnMoved) {
-            if(!(game.checkWinCondition() || game.isDraw())){
-                game.switchPlayer();
-                if (game.isCurrentPlayerAI()) {
-                    updateAIButtonState();
-                }
-            }
-        }
+        Mark mark = game.getMarkTotem(selectedTotemPosition);
+        game.processPawnInput("R" + mark + " " + pos.row() + " " + pos.column());
+        return true;
     }
 
     private void handleMoveError(String message) {
