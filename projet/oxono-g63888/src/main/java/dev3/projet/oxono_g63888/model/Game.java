@@ -30,10 +30,10 @@ public class Game implements Observable {
         this.state = GameState.STARTED;
     }
 
-        /**
+    /**
      * Initializes a new game with the specified board size and player number.
      *
-     * @param sizeBoard the size of the board
+     * @param sizeBoard    the size of the board
      * @param playerNumber the number of players in the game
      */
     public void initializeGame(int sizeBoard, int playerNumber) {
@@ -47,7 +47,7 @@ public class Game implements Observable {
                 players = new Player[]{humanPlayer, aiPlayer};
             }
             case 3 -> {
-                aiPlayer = new AIPlayer(ColorPawn.BLACK, new MinMaxAIStrategy());
+                aiPlayer = new AIPlayer(ColorPawn.BLACK, new  AIMCTSStrategy(ColorPawn.BLACK));
                 players = new Player[]{humanPlayer, aiPlayer};
             }
             case 4 -> {
@@ -74,7 +74,7 @@ public class Game implements Observable {
         this.state = GameState.WAITING_FOR_TOTEM;
     }
 
-        /**
+    /**
      * Plays the AI's turn in the game.
      *
      * @throws OxonoException if the current player is not an AI player.
@@ -94,12 +94,12 @@ public class Game implements Observable {
             executePawnMove(aiPlayer.getNextMove(board));
             state = GameState.WAITING_FOR_TOTEM;
         } catch (OxonoException e) {
-            throw new IllegalStateException(e.getMessage());
+            throw new OxonoException(e.getMessage());
         }
 
     }
 
-        /**
+    /**
      * Executes the AI's move for the specified totem.
      *
      * @param totemMove The move to be executed, containing the token and the new position for the totem.
@@ -114,7 +114,7 @@ public class Game implements Observable {
             throw new OxonoException("Invalid totem move");
         }
         board.moveTotem(totemAI, newPosTotem);
-        Command command = new MoveTotemCommand(board, totemAI, newPosTotem, totemPos);
+        Command command = new MoveTotemCommand(totemAI, newPosTotem, totemPos);
         invoker.executeCommand(command);
         lastTotemPlay = totemAI;
         updateTotemPosition(lastTotemPlay, newPosTotem);
@@ -127,7 +127,7 @@ public class Game implements Observable {
 
     }
 
-        /**
+    /**
      * Executes the pawn move based on the given move.
      *
      * @param pawnMove The move to be executed, containing the token and the new position for the pawn.
@@ -145,17 +145,17 @@ public class Game implements Observable {
         if (!board.isValidInsertion(pawnPos, totemPos)) {
             throw new OxonoException("Invalid pawn move");
         }
-        board.insertPawn((Pawn) token, pawnPos,totemPos);
-        Command command = new InsertPawnCommand(board, (Pawn) token, currentPlayer, totemPos, pawnPos);
+        board.insertPawn((Pawn) token, pawnPos, totemPos);
+        Command command = new InsertPawnCommand((Pawn) token, pawnPos);
         invoker.executeCommand(command);
         lastPawnPosition = pawnPos;
-
+        currentPlayer.usePawn(token.getMark());
         notifyObservers(new OxonoEvent(ObservableEvent.PLACE_PAWN)
                 .addData("pawn", token)
                 .addData("newPosition", pawnPos)
                 .addData("oldPosition", lastPawnPosition)
         );
-        if (!checkWinCondition() || !isDraw()){
+        if (!(checkWinCondition() || isDraw())) {
             switchPlayer();
         }
     }
@@ -172,12 +172,12 @@ public class Game implements Observable {
         }
     }
 
-        /**
+    /**
      * Processes the input for a totem move in the game.
      * This method validates and executes the totem move based on the provided input.
      * After processing the totem move, it updates the game state to wait for a pawn move.
      *
-     * @param totemInput A string representing the totem move input. 
+     * @param totemInput A string representing the totem move input.
      *                   Expected format: "totem [row] [column]"
      * @throws OxonoException If the input is invalid or the move is not allowed
      */
@@ -187,63 +187,68 @@ public class Game implements Observable {
     }
 
     /**
- * Processes the input for a pawn move in the game.
- * This method validates and executes the pawn move based on the provided input.
- * After processing the pawn move, it updates the game state to wait for a totem move.
- *
- * @param pawnInput A string representing the pawn move input. 
- *                  Expected format: "pawn [row] [column]"
- * @throws OxonoException If the input is invalid or the move is not allowed
- */
-public void processPawnInput(String pawnInput) throws OxonoException {
-    processInput(pawnInput, false);
-    state = GameState.WAITING_FOR_TOTEM;
-}
-
-    /**
- * Processes the input for either a totem or pawn move in the game.
- * This method parses the input, validates it, and executes the appropriate move.
- * It also notifies observers about the move that was made.
- *
- * @param input A string representing the move input. 
- *              Expected format: "totem [row] [column]" or "pawn [row] [column]"
- * @param isTotem A boolean flag indicating whether the move is for a totem (true) or a pawn (false)
- * @throws OxonoException If the input format is invalid or if the move is not allowed
- */
-private void processInput(String input, boolean isTotem) throws OxonoException {
-    String[] parts = input.split(" ");
-    if (parts.length != 3) {
-        throw new OxonoException("Invalid input format. Use 'totem [row] [column]' or 'pawn [row] [column]'");
+     * Processes the input for a pawn move in the game.
+     * This method validates and executes the pawn move based on the provided input.
+     * After processing the pawn move, it updates the game state to wait for a totem move.
+     *
+     * @param pawnInput A string representing the pawn move input.
+     *                  Expected format: "pawn [row] [column]"
+     * @throws OxonoException If the input is invalid or the move is not allowed
+     */
+    public void processPawnInput(String pawnInput) throws OxonoException {
+        processInput(pawnInput, false);
+        state = GameState.WAITING_FOR_TOTEM;
     }
 
-    try {
+    /**
+     * Processes the input for either a totem or pawn move in the game.
+     * This method parses the input, validates it, and executes the appropriate move.
+     * It also notifies observers about the move that was made.
+     *
+     * @param input   A string representing the move input.
+     *                Expected format: "totem [row] [column]" or "pawn [row] [column]"
+     * @param isTotem A boolean flag indicating whether the move is for a totem (true) or a pawn (false)
+     * @throws OxonoException If the input format is invalid or if the move is not allowed
+     */
+    private void processInput(String input, boolean isTotem) throws OxonoException {
+        String[] parts = input.split(" ");
+        if (parts.length != 3) {
+            throw new OxonoException("Invalid input format. Use 'totem [row] [column]' or 'pawn [row] [column]'");
+        }
         Mark mark = Mark.valueOf(isTotem ? parts[0] : parts[0].substring(1));
         Position newPosition = new Position(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
         Position actualTotemPos = getTotemPositionForMove(mark);
 
-        Command command = isTotem ? processTotemMove(newPosition, actualTotemPos)
-                : processPawnMove(mark, newPosition, actualTotemPos);
-        invoker.executeCommand(command);
-        if (isTotem) {
-            notifyObservers(new OxonoEvent(ObservableEvent.MOVE_TOTEM)
-                    .addData("totem", lastTotemPlay)
-                    .addData("oldPosition", actualTotemPos)
-                    .addData("newPosition", newPosition));
-        } else {
-            Pawn pawn = new Pawn(currentPlayer.getColor(), mark);
-            notifyObservers(new OxonoEvent(ObservableEvent.PLACE_PAWN)
-                    .addData("pawn", pawn)
-                    .addData("oldPosition", lastPawnPosition)
-                    .addData("newPosition", newPosition));
-            if (!checkWinCondition() || !isDraw()){
-                switchPlayer();
-            }
+        if (!currentPlayer.hasPawn(mark)) {
+            throw new OxonoException("Player does not have a pawn of the specified mark");
         }
+        try {
 
-    } catch (IllegalArgumentException e) {
-        throw new OxonoException("Invalid input data");
+            Command command = isTotem ? processTotemMove(newPosition, actualTotemPos)
+                    : processPawnMove(mark, newPosition, actualTotemPos);
+            invoker.executeCommand(command);
+            if (isTotem) {
+                notifyObservers(new OxonoEvent(ObservableEvent.MOVE_TOTEM)
+                        .addData("totem", lastTotemPlay)
+                        .addData("oldPosition", actualTotemPos)
+                        .addData("newPosition", newPosition));
+            } else {
+                Pawn pawn = new Pawn(currentPlayer.getColor(), mark);
+                currentPlayer.usePawn(mark);
+                notifyObservers(new OxonoEvent(ObservableEvent.PLACE_PAWN)
+                        .addData("pawn", pawn)
+                        .addData("oldPosition", lastPawnPosition)
+                        .addData("newPosition", newPosition));
+
+                if (!(checkWinCondition() || isDraw())) {
+                    switchPlayer();
+                }
+            }
+
+        } catch (IllegalArgumentException e) {
+            throw new OxonoException("Invalid input data");
+        }
     }
-}
 
     private Command processTotemMove(Position newPosition, Position actualTotemPos) throws OxonoException {
         Totem totem = board.getTotem(actualTotemPos);
@@ -254,7 +259,7 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
         board.moveTotem(totem, newPosition);
         lastTotemPlay = totem;
         updateTotemPosition(totem, newPosition);
-        return new MoveTotemCommand(board, totem, newPosition, actualTotemPos);
+        return new MoveTotemCommand(totem, newPosition, actualTotemPos);
     }
 
     private Command processPawnMove(Mark mark, Position newPosition, Position actualTotemPos) throws OxonoException {
@@ -266,10 +271,10 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
             throw new OxonoException("Invalid Pawn move");
         }
         Pawn pawn = new Pawn(currentPlayer.getColor(), mark);
-        board.insertPawn(pawn, newPosition,actualTotemPos);
+        board.insertPawn(pawn, newPosition, actualTotemPos);
         lastPawnPosition = newPosition;
 
-        return new InsertPawnCommand(board, pawn, currentPlayer, actualTotemPos, newPosition);
+        return new InsertPawnCommand(pawn, newPosition);
     }
 
 
@@ -282,19 +287,16 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
      */
     public boolean checkWinCondition() {
         Token token = board.getToken(lastPawnPosition);
-        if (!board.isTotem(token)) {
-            boolean isWin = board.checkWin((Pawn) token, lastPawnPosition);
-            if (isWin) {
-                state = GameState.GAME_OVER;
-                notifyObservers(new OxonoEvent(ObservableEvent.WIN)
-                        .addData("winner", currentPlayer)
-                        .addData("winningPosition", board.getWinnigPositions())
-                );
-            }
-
-            return isWin;
+        boolean isWinning = board.checkWin((Pawn) token, lastPawnPosition);
+        if (isWinning) {
+            state = GameState.GAME_OVER;
+            notifyObservers(new OxonoEvent(ObservableEvent.WIN)
+                    .addData("winner", currentPlayer)
+                    .addData("winningPosition", board.getWinnigPositions())
+            );
         }
-        return false;
+
+        return isWinning;
     }
 
     private void switchPlayer() {
@@ -302,15 +304,15 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
     }
 
     public boolean isDraw() {
+        boolean isDrawing = false;
         if (state != GameState.GAME_OVER) {
-            boolean isDraw = players[0].dontHaveAnyPawns() && players[1].dontHaveAnyPawns();
-            if (isDraw) {
+            isDrawing = players[0].dontHaveAnyPawns() && players[1].dontHaveAnyPawns();
+            if (isDrawing) {
                 notifyObservers(new OxonoEvent(ObservableEvent.DRAW));
                 state = GameState.GAME_OVER;
             }
-            return isDraw;
         }
-        return false;
+        return isDrawing;
     }
 
 
@@ -325,6 +327,7 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
         try {
             if (command instanceof InsertPawnCommand pawnCommand) {
                 lastPawnPosition = pawnCommand.getPawnPosition();
+                Pawn pawn = pawnCommand.getPawn();
                 switchPlayer();
 
                 if (invoker.getUndoPeek() instanceof MoveTotemCommand) {
@@ -333,8 +336,9 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
 
                 state = GameState.WAITING_FOR_PAWN;
                 board.removePawn(lastPawnPosition);
+                currentPlayer.returnPawn(pawn.getMark());
                 notifyObservers(new OxonoEvent(ObservableEvent.UNDO)
-                        .addData("pawn", pawnCommand.getPawn())
+                        .addData("pawn", pawn)
                         .addData("currentPlayer", currentPlayer)
                         .addData("newPosition", pawnCommand.getPawnPosition()));
             } else if (command instanceof MoveTotemCommand totemCommand) {
@@ -382,6 +386,7 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
                 Pawn pawn = pawnCommand.getPawn();
                 lastPawnPosition = pawnCommand.getPawnPosition();
                 board.insertPawn(pawn, lastPawnPosition, getTotemPositionForMove(lastTotemPlay.getMark()));
+                currentPlayer.usePawn(pawn.getMark());
                 switchPlayer();
 
                 state = GameState.WAITING_FOR_TOTEM;
@@ -412,13 +417,13 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
     public boolean isUndoRedoInProgress() {
         return isUndoRedoInProgress;
     }
-    public Player getCurrentPlayer() {
-        return currentPlayer;
-    }
 
     public boolean isCurrentPlayerAI() {
-        state = GameState.AI_TURN;
         return currentPlayer instanceof AIPlayer;
+    }
+
+    public String getToString() {
+        return currentPlayer.toString();
     }
 
     public void surrender() {
@@ -462,15 +467,23 @@ private void processInput(String input, boolean isTotem) throws OxonoException {
     public GameState getGameState() {
         return state;
     }
-    public static int size(){
+
+    public static int size() {
         return sizeBoard;
     }
-    public Token getToken(Position pos) {
-      return board.getToken(pos);
+
+    public ColorPawn getColorPlayer() {
+        return currentPlayer.getColor();
     }
+
+    public Token getToken(Position pos) {
+        return board.getToken(pos);
+    }
+
     public Mark getMarkTotem(Position pos) {
         return board.getTotem(pos).getMark();
     }
+
     private Player getOpponent() {
         return currentPlayer == players[0] ? players[1] : players[0];
     }

@@ -10,6 +10,10 @@ public class Totem extends Token {
         super(mark);
 
     }
+    @Override
+    public Token copy() {
+        return new Totem(this.getMark());
+    }
 
     @Override
     public String toString() {

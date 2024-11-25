@@ -39,8 +39,8 @@ public class ConsoleView {
     }
 
 
-    public String getPlayerInput(Player player, String prompt) {
-        System.out.println(player.getColor() + ", " + prompt);
+    public String getPlayerInput(String colorPlayer, String prompt) {
+        System.out.println(colorPlayer + ", " + prompt);
         return scanner.nextLine();
     }
 
@@ -48,8 +48,8 @@ public class ConsoleView {
         System.out.println("Erreur : " + message);
     }
 
-    public void showWinMessage(Player player) {
-        System.out.println("Le joueur " + player.getColor() + " a gagné !");
+    public void showWinMessage(String colorPlayer) {
+        System.out.println("Le joueur " + colorPlayer + " a gagné !");
     }
 
     public void showDrawMessage() {

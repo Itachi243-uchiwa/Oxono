@@ -17,6 +17,11 @@ public class Pawn extends Token {
     }
 
     @Override
+    public Token copy() {
+        return new Pawn(this.color, this.getMark());
+    }
+
+    @Override
     public String toString() {
 
         return color == ColorPawn.PINK ? ANSI_PINK + getMark() + ANSI_RESET : String.valueOf(getMark());

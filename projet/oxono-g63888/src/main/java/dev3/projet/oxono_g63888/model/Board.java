@@ -1,5 +1,7 @@
 package dev3.projet.oxono_g63888.model;
 
+import dev3.projet.oxono_g63888.model.strategy.ZobristHashing;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,11 +12,15 @@ public class Board {
     private Position totemPosO;
 
     private int size;
+    private ZobristHashing zobristHashing;
+    private long currentHash;
     private List<Position> winningPositions;
 
     public Board(int size) {
         this.size = size;
         this.winningPositions = new ArrayList<>();
+        this.zobristHashing = new ZobristHashing(size);
+        this.currentHash = 0L;
         initializeBoard(size);
     }
 
@@ -64,7 +70,7 @@ public class Board {
     /**
      * Checks if a position is empty (contains no token)
      */
-    private boolean isEmpty(Position pos) {
+    public boolean isEmpty(Position pos) {
         if (!isInBounds(pos)) {
             throw new OxonoException("Position hors des limites du plateau: " + pos);
         }
@@ -86,7 +92,10 @@ public class Board {
      */
     public void moveTotem(Token totem, Position newpos) {
         Position oldTotemPos = getTotemPosition(totem.getMark());
+
         if (isValidMove(newpos, oldTotemPos)) {
+            currentHash ^= zobristHashing.getHashForTotem(newpos.row(), newpos.column(), totem.getMark());
+
             insertToken(totem, newpos);
             board[oldTotemPos.row()][oldTotemPos.column()] = null;
             if (totem.getMark() == Mark.X) {
@@ -103,6 +112,9 @@ public class Board {
      */
     public void insertPawn(Pawn pawn, Position pos, Position totemPos) {
         if (isValidInsertion(pos, totemPos)) {
+
+            currentHash ^= zobristHashing.getHashForPawn(pos.row(), pos.column(), pawn.getColor());
+
             insertToken(pawn, pos);
         }
     }
@@ -118,6 +130,8 @@ public class Board {
         if (isEmpty(pawnPosition)){
             throw new OxonoException("Invalid position: no pawn found at " + pawnPosition);
         }
+        Pawn pawn = (Pawn) getToken(pawnPosition);
+        currentHash ^= zobristHashing.getHashForPawn(pawnPosition.row(), pawnPosition.column(), pawn.getColor());
         board[pawnPosition.row()][pawnPosition.column()] = null;
     }
 
@@ -399,4 +413,32 @@ public class Board {
     public int getSize() {
         return size;
     }
+    public long calculateZobristHash() { return currentHash; }
+
+    public Board copy() {
+        Board copiedBoard = new Board(this.size);
+        copiedBoard.currentHash = this.currentHash;
+        copiedBoard.totemPosX = this.totemPosX; // Immutable Position, peut être partagé
+        copiedBoard.totemPosO = this.totemPosO; // Immutable Position, peut être partagé
+
+        // Copier les positions gagnantes
+        copiedBoard.winningPositions = new ArrayList<>(this.winningPositions);
+
+        // Copier le tableau des Tokens
+        copiedBoard.board = new Token[this.size][this.size];
+        for (int row = 0; row < this.size; row++) {
+            for (int col = 0; col < this.size; col++) {
+                if (this.board[row][col] != null) {
+                    copiedBoard.board[row][col] = this.board[row][col].copy(); // Supposons que Token a une méthode copy()
+                }
+            }
+        }
+
+        // Copier l'objet de hachage Zobrist
+        copiedBoard.zobristHashing = this.zobristHashing; // Si ZobristHashing est immuable, peut être partagé
+
+        return copiedBoard;
+    }
+
+
 }

@@ -5,13 +5,11 @@ import dev3.projet.oxono_g63888.model.*;
 
 public class MoveTotemCommand implements Command {
 
-    private Board board;
     private Totem totem;
     private Position newPosition;
     private Position oldPosition;
 
-    public MoveTotemCommand(Board board, Totem totem, Position newPosition, Position oldPosition) throws OxonoException {
-        this.board = board;
+    public MoveTotemCommand(Totem totem, Position newPosition, Position oldPosition) throws OxonoException {
         this.totem = totem;
         this.newPosition = newPosition;
 
@@ -26,7 +24,6 @@ public class MoveTotemCommand implements Command {
      */
     @Override
     public void execute() throws OxonoException {
-
     }
 
     /**

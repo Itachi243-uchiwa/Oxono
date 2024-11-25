@@ -156,13 +156,12 @@ public class ConsoleController implements Observer {
                 playPlayerTurn();
             }
 
-        } while (!game.isDraw() && !game.checkWinCondition());
+        } while (game.getGameState() != GameState.GAME_OVER);
 
-        handleGameEnd();
     }
 
     private void playAITurn() {
-        System.out.println("C'est au tour de l'IA " + game.getCurrentPlayer().getColor() +
+        System.out.println("C'est au tour de l'IA " + game.getToString() +
                 ". Appuyez sur Entrée pour que l'IA joue.");
 
         String input = view.getNextLine();
@@ -212,7 +211,7 @@ public class ConsoleController implements Observer {
                         "Entrez la position de votre totem (ex : X 2 3)" :
                         "Entrez la position de votre pion (ex : RX 2 3)";
 
-                String input = view.getPlayerInput(game.getCurrentPlayer(), prompt);
+                String input = view.getPlayerInput(game.getToString(), prompt);
                 validMove = handlePlayerInput(input, expectedPattern);
             } catch (OxonoException e) {
                 view.showErrorMessage("Erreur lors de l'entrée du " + pieceType + ": " + e.getMessage());
@@ -236,15 +235,6 @@ public class ConsoleController implements Observer {
         }
     }
 
-    private void handleGameEnd() {
-        view.displayBoard(game);
-        if (game.checkWinCondition()) {
-            view.showWinMessage(game.getCurrentPlayer());
-        } else {
-            view.showDrawMessage();
-        }
-    }
-
     @Override
     public void update(Game game, OxonoEvent event) {
         switch (event.getEvent()) {
@@ -258,7 +248,7 @@ public class ConsoleController implements Observer {
 
                 break;
             case WIN:
-                view.showWinMessage(game.getCurrentPlayer());
+                view.showWinMessage(game.getToString());
                 break;
             case DRAW:
                 view.showDrawMessage();

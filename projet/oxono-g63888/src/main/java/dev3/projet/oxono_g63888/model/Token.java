@@ -12,6 +12,8 @@ public abstract class Token {
         return mark;
     }
 
+    public abstract Token copy();
+
     @Override
     public String toString() {
         return "Piece{" + "mark=" + mark + '}';

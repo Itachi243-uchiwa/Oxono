@@ -86,16 +86,4 @@ import java.util.List;
             assertEquals(GameState.SURRENDER, game.getGameState());
         }
 
-        @Test
-        void testIsDraw() {
-            game.initializeGame(8, 2);
-            assertFalse(game.isDraw());
-        }
-
-        @Test
-        void testCheckWinCondition_NotWin() {
-            game.initializeGame(8, 2);
-            // Simulate a scenario where win condition is not met
-            assertFalse(game.checkWinCondition());
-        }
     }

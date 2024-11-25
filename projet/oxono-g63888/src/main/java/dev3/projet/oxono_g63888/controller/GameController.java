@@ -9,8 +9,6 @@ import javafx.scene.control.*;
 
 import java.util.List;
 
-import static dev3.projet.oxono_g63888.model.Observer.ObservableEvent.GAME_START;
-
 public class GameController implements Observer {
     private Game game;
     private GameView view;
@@ -40,8 +38,6 @@ public class GameController implements Observer {
         setButtonsState(false);
     }
 
-    // [Previous methods remain the same]
-
     public void showStartDialog() {
         GameSettingsDialog.showStartDialog((boardSize, gameMode) -> {
             gameOver = false;
@@ -49,11 +45,11 @@ public class GameController implements Observer {
             setButtonsState(true);
             updateAIButtonState();
             view.setStatus("La partie commence! C'est au tour du joueur " +
-                    (game.getCurrentPlayer().getColor() == ColorPawn.PINK ? "Rose" : "Noir"));
+                    (game.getColorPlayer() == ColorPawn.PINK ? "Rose" : "Noir"));
         });
     }
 
-    private void handleGameOver(Player winner, boolean surround) {
+    private void handleGameOver(String winner, boolean surround) {
         gameOver = true;
         setButtonsState(false);
         String message = winner == null ?
@@ -95,6 +91,7 @@ public class GameController implements Observer {
     private void performAIMove() {
         if (gameOver || !game.isCurrentPlayerAI()) return;
         game.playAITurn();
+        updateAIButtonState();
     }
 
     public void handleCellClick(Position pos) {
@@ -103,7 +100,6 @@ public class GameController implements Observer {
         try {
             clickedPos = pos;
             Token token = game.getToken(clickedPos);
-            boolean pawnMoved = false;
 
             if (token instanceof Totem) {
                 if (selectedTotemPosition != null && !isPlacingTotem) {
@@ -115,7 +111,7 @@ public class GameController implements Observer {
                 handleTotemMovement(pos);
                 view.setStatus("Sélectionnez où placer votre pion");
             } else if (selectedTotemPosition != null) {
-                pawnMoved = handlePawnPlacement(pos);
+                boolean pawnMoved = handlePawnPlacement(pos);
                 if (pawnMoved) {
                     selectedTotemPosition = null;
                     isPlacingTotem = false;
@@ -215,8 +211,8 @@ public class GameController implements Observer {
                     view.setStatus("Pion placé");
                 }
                 case WIN -> {
-                    handleGameOver(game.getCurrentPlayer(), false);
-                    view.setStatus("Victoire du joueur " + game.getCurrentPlayer());
+                    handleGameOver(game.getToString(), false);
+                    view.setStatus("Victoire du joueur " + game.getToString());
                     List<Position> fourSuite = event.getEventData("winningPosition", List.class);
                     System.out.println(fourSuite);
                     view.addVictoryAnimation(fourSuite);
@@ -228,7 +224,7 @@ public class GameController implements Observer {
                 }
                 case SURRENDER -> {
                     Player playerWin = event.getEventData("PlayerWin", Player.class);
-                    handleGameOver(playerWin, true);
+                    handleGameOver(playerWin.toString(), true);
                 }
                 case UNDO -> {
                     try {
@@ -268,13 +264,13 @@ public class GameController implements Observer {
 
             }
 
-            updatePlayerTurn(game.getCurrentPlayer());
+            updatePlayerTurn(game.getToString());
         });
     }
 
-    private void updatePlayerTurn(Player currentPlayer) {
+    private void updatePlayerTurn(String currentPlayer) {
         view.setCurrentPlayer("Tour du joueur " +
-                (currentPlayer.toString()));
+                (currentPlayer));
     }
 
 }
