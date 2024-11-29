@@ -47,7 +47,7 @@ public class Game implements Observable {
                 players = new Player[]{humanPlayer, aiPlayer};
             }
             case 3 -> {
-                aiPlayer = new AIPlayer(ColorPawn.BLACK, new  AIMCTSStrategy(ColorPawn.BLACK));
+                aiPlayer = new AIPlayer(ColorPawn.BLACK, new SmartAIStrategy(ColorPawn.BLACK));
                 players = new Player[]{humanPlayer, aiPlayer};
             }
             case 4 -> {

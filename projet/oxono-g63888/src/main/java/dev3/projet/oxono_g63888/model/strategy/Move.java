@@ -5,4 +5,11 @@ import dev3.projet.oxono_g63888.model.Position;
 import dev3.projet.oxono_g63888.model.Token;
 
 public record Move(Token token, Position movePosition) {
+    @Override
+    public String toString() {
+        return "Move{" +
+                "token=" + token +
+                ", movePosition=" + movePosition +
+                '}';
+    }
 }
