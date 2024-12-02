@@ -244,6 +244,7 @@ public class GameController implements Observer {
                     } catch (OxonoException e) {
                         view.setStatus("Erreur lors de l'annulation");
                     }
+                    view.clearColor("hover-move");
                 }
                 case REDO -> {
                     Pawn pawn = event.getEventData("pawn", Pawn.class);

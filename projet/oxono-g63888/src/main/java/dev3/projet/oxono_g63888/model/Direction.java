@@ -13,7 +13,6 @@ public enum Direction {
         this.deltaX = deltaX;
         this.deltaY = deltaY;
     }
-
     public int getDeltaX() {
         return deltaX;
     }

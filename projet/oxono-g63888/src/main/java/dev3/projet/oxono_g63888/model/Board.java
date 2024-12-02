@@ -364,8 +364,7 @@ public class Board {
      *
      * @param pawn       The pawn to check for a sequence.
      * @param pos        The position of the pawn on the board.
-     * @param dir1       The first direction to check for a sequence.
-     * @param dir2       The second direction to check for a sequence.
+     * @param dir     The first direction to check for a sequence.
      * @param checkColor Whether to check for matching colors or marks.
      * @return A list of positions that form a sequence of 4 or more consecutive pawns.
      */

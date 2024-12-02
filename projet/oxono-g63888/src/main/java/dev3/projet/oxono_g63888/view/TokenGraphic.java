@@ -114,21 +114,5 @@ public class TokenGraphic extends StackPane {
             getChildren().add(circle);
         }
     }
-
-
-    public TokenGraphic createPawnFX(Pawn pawn) {
-        Color color = pawn.getColor() == ColorPawn.PINK ? Color.DEEPPINK : Color.BLACK;
-        TokenGraphic pawnFX = new TokenGraphic(color, PieceType.PAWN);
-        pawnFX.setMark(pawn.getMark());
-        return pawnFX;
-    }
-
-    /**
-     * Crée un jeton visuel pour un totem
-     */
-    public TokenGraphic createTotemFX(Totem totem) {
-        TokenGraphic totemFX = new TokenGraphic(Color.CYAN, PieceType.TOTEM);
-        totemFX.setMark(totem.getMark());
-        return totemFX;
-    }
+    
 }

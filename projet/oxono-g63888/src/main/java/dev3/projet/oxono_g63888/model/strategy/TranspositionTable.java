@@ -19,19 +19,19 @@ public class TranspositionTable {
         this.table = new HashMap<>();
     }
 
-    public void store(long zobristHash, int depth, int score, Position bestMove) {
+    public void store(long zobristHash, int depth, int score, Move moveTotem, Move movePawn) {
         if (table.size() >= maxSize) {
             // Simple stratégie de remplacement : supprimer une entrée aléatoire
             if (!table.isEmpty()) {
                 table.remove(table.keySet().iterator().next());
             }
         }
-        table.put(zobristHash, new Entry(depth, score, bestMove));
+        table.put(zobristHash, new Entry(depth, score, moveTotem, movePawn));
     }
 
     public Entry probe(long zobristHash) {
         return table.get(zobristHash);
     }
 
-    public record Entry(int depth, int score, Position bestMove) {}
+    public record Entry(int depth, int score, Move moveTotem, Move movePawn) {}
 }
