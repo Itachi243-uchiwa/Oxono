@@ -39,11 +39,6 @@ public class OxonoEvent {
         return null;
     }
 
-
-    public Map<String, Object> getAllEventData() {
-        return Collections.unmodifiableMap(eventData);
-    }
-
     @Override
     public String toString() {
         return "OxonoEvent{" +

@@ -487,4 +487,7 @@ public class Game implements Observable {
     private Player getOpponent() {
         return currentPlayer == players[0] ? players[1] : players[0];
     }
+    public int getSizeBoard(){
+        return sizeBoard;
+    }
 }

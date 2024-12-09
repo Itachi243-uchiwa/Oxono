@@ -13,13 +13,10 @@ public class InsertPawnCommand implements Command {
     }
 
     @Override
-    public void execute() {
-
-    }
+    public void execute() {}
 
     @Override
-    public void unexecute() {
-    }
+    public void unexecute() {}
 
     @Override
     public Mark getMovedMark() {

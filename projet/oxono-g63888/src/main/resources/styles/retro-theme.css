@@ -1,0 +1,171 @@
+/* Authentic 60s Retro Theme */
+.root {
+    /* Psychedelic background with warm, vibrant colors */
+    -fx-background-color: linear-gradient(to bottom,
+    #FF6B6B,
+    #4ECDC4);
+    -fx-background-size: 50px 50px;
+
+    /* Groovy, mod-inspired font */
+    -fx-font-family: "Futura", sans-serif;
+    -fx-font-size: 14px;
+
+    /* Subtle shadow to add depth */
+    -fx-effect:
+            dropshadow(gaussian, rgba(0, 0, 0, 0.3), 15, 0.2, 0, 0);
+}
+
+.board-container {
+    /* Warm, vibrant panel colors */
+    -fx-background-color: linear-gradient(to bottom,
+    #FFD93D,
+    #FF6B6B
+    );
+    -fx-border-color: #4ECDC4;
+    -fx-border-width: 3px;
+    -fx-border-style: solid inside;
+
+    /* Soft rounded corners */
+    -fx-background-radius: 20px;
+    -fx-border-radius: 20px;
+
+    /* Playful shadow */
+    -fx-effect:
+            dropshadow(gaussian, rgba(0, 0, 0, 0.4), 15, 0.3, 0, 0);
+}
+
+.board-cell {
+    /* Psychedelic base color */
+    -fx-background-color: rgba(78, 205, 196, 0.7);
+    -fx-border-color: #FF6B6B;
+    -fx-border-width: 2px;
+    -fx-border-style: dashed;
+
+    /* Consistent cell size */
+    -fx-min-width: 60px;
+    -fx-min-height: 60px;
+
+    /* Groovy cursor */
+    -fx-cursor: hand;
+
+    /* Playful effect */
+    -fx-effect:
+            innershadow(gaussian, rgba(255, 107, 107, 0.3), 10, 0.3, 0, 0);
+}
+
+.board-cell:hover {
+    /* Pop art hover effect */
+    -fx-background-color: rgba(255, 217, 61, 0.5);
+    -fx-border-color: #4ECDC4;
+    -fx-effect:
+            dropshadow(gaussian, rgba(255, 217, 61, 0.7), 15, 0.5, 0, 0);
+}
+
+.header {
+    /* Mod-inspired header */
+    -fx-background-color: linear-gradient(to right,
+    #FF6B6B,
+    #4ECDC4
+    );
+    -fx-border-color: #FFD93D;
+    -fx-border-width: 2px;
+    -fx-padding: 10px;
+
+    /* Groovy text effect */
+    -fx-effect:
+            dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0.3, 0, 0);
+}
+
+.player-turn-label {
+    /* Bold, vibrant text */
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Futura", sans-serif;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+
+    /* Psychedelic text shadow */
+    -fx-effect:
+            dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.5, 0, 0);
+}
+
+.game-button {
+    /* Mod culture button style */
+    -fx-background-color: linear-gradient(to bottom,
+    #4ECDC4,
+    #FF6B6B
+    );
+    -fx-text-fill: #FFFFFF;
+    -fx-border-color: #FFD93D;
+    -fx-border-width: 2px;
+
+    /* Rounded but not too soft */
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+
+    /* Playful button shadow */
+    -fx-effect:
+            dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0.3, 0, 0);
+}
+
+.game-button:hover {
+    /* Vibrant hover effect */
+    -fx-background-color: linear-gradient(to bottom,
+    #FF6B6B,
+    #4ECDC4
+    );
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-cursor: hand;
+}
+
+.theme-combo {
+    /* Psychedelic dropdown */
+    -fx-background-color: #FFD93D;
+    -fx-text-fill: #FF6B6B;
+    -fx-border-color: #4ECDC4;
+    -fx-border-width: 2px;
+
+    /* Soft rounded corners */
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+}
+
+.theme-combo .list-cell,
+.theme-combo .list-view {
+    /* Dropdown list styling */
+    -fx-background-color: #FF6B6B;
+    -fx-text-fill: #FFFFFF;
+}
+
+.rack-label, .status-label {
+    /* Bold, vibrant labels */
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Futura", sans-serif;
+    -fx-effect:
+            dropshadow(gaussian, rgba(0, 0, 0, 0.4), 10, 0.3, 0, 0);
+}
+
+.valid-move {
+    /* Highlight for valid moves */
+    -fx-background-color: rgba(78, 205, 196, 0.3);
+    -fx-border-color: #FFD93D;
+    -fx-border-width: 2px;
+    -fx-effect:
+            dropshadow(gaussian, rgba(255, 217, 61, 0.5), 15, 0.3, 0, 0);
+}
+
+.hover-move {
+    /* Hover effect for moves */
+    -fx-background-color: rgba(255, 107, 107, 0.2);
+    -fx-border-color: #4ECDC4;
+    -fx-border-width: 2px;
+    -fx-effect:
+            dropshadow(gaussian, rgba(78, 205, 196, 0.5), 15, 0.3, 0, 0);
+}
+
+/* Optional: Add a subtle pattern to enhance the 60s feel */
+@keyframes colorPulse {
+    0% { background-color: #FF6B6B; }
+    50% { background-color: #4ECDC4; }
+    100% { background-color: #FF6B6B; }
+}

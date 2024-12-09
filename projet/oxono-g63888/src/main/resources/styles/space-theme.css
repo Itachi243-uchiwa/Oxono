@@ -1,0 +1,211 @@
+/* SpaceX-Inspired Theme */
+.root {
+    -fx-background-color: linear-gradient(to bottom, #0A1128, #001F3F); /* Deep space dark blue gradient */
+}
+
+/* Main game board container */
+.board-container {
+    -fx-background-color: #0A2342; /* Dark navy blue */
+    -fx-padding: 20;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #1E90FF; /* Dodger blue */
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(30,144,255,0.3), 15, 0, 0, 0);
+}
+
+/* Board cells */
+.board-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: #4169E1; /* Royal blue */
+    -fx-border-width: 1;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-cursor: hand;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.board-cell:hover {
+    -fx-background-color: rgba(65,105,225,0.2); /* Subtle royal blue overlay */
+    -fx-effect: innershadow(gaussian, rgba(65,105,225,0.4), 10, 0, 0, 0);
+}
+
+/* Valid move highlighting */
+.valid-move {
+    -fx-background-color: rgba(0, 255, 255, 0.2); /* Cyan with transparency */
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,255,0.3), 15, 0, 0, 0);
+}
+
+/* Hover move style */
+.hover-move {
+    -fx-background-color: rgba(135,206,250,0.3); /* Light sky blue */
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(135,206,250,0.5), 15, 0, 0, 0);
+}
+
+/* Header */
+.header {
+    -fx-background-color: #1E3A8A; /* Deep blue */
+    -fx-padding: 15;
+    -fx-background-radius: 10;
+    -fx-border-color: #4169E1; /* Royal blue */
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(30,58,138,0.4), 10, 0, 0, 0);
+}
+
+/* Player turn label */
+.player-turn-label {
+    -fx-text-fill: #E6F2FF; /* Very light blue */
+    -fx-font-size: 18px;
+    -fx-font-family: "Orbitron"; /* Futuristic, space-inspired font */
+    -fx-effect: dropshadow(gaussian, rgba(0,191,255,0.5), 3, 0, 0, 0);
+}
+
+/* Game buttons */
+.game-button {
+    -fx-background-color: linear-gradient(to bottom, #1E90FF, #4169E1); /* Dodger blue to royal blue */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 8;
+    -fx-border-color: #00BFFF; /* Deep sky blue */
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+}
+.theme-combo {
+    -fx-background-color: linear-gradient(to bottom, #1E90FF, #4169E1);
+    -fx-background-radius: 8;
+    -fx-text-fill: whie;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 7 15;
+    -fx-border-color:  #00BFFF;
+    -fx-border-radius: 8;
+    -fx-border-width: 2;
+}
+
+.theme-combo .list-cell, .theme-combo .list-view {
+    -fx-background-color: linear-gradient(to bottom, #1E90FF, #4169E1);
+    -fx-text-fill: #FFFFFF;
+}
+.game-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #4169E1, #0000CD); /* Royal blue to medium blue */
+    -fx-effect: dropshadow(gaussian, rgba(30,144,255,0.5), 10, 0, 0, 0);
+    -fx-cursor: hand;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.game-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* Player rack container */
+.rack-container {
+    -fx-background-color: #0A2342; /* Dark navy blue */
+    -fx-padding: 20;
+    -fx-background-radius: 10;
+    -fx-border-color: #1E90FF; /* Dodger blue */
+    -fx-border-radius: 10;
+    -fx-spacing: 15;
+    -fx-effect: dropshadow(gaussian, rgba(30,144,255,0.3), 10, 0, 0, 0);
+}
+
+/* Rack label */
+.rack-label, .status-label{
+    -fx-text-fill: #E6F2FF; /* Very light blue */
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,191,255,0.5), 2, 0, 0, 0);
+}
+/* Pawns container */
+.pawns-container {
+    -fx-spacing: 10;
+    -fx-padding: 10;
+    -fx-alignment: center;
+    -fx-background-color: rgba(65,105,225,0.1); /* Transparent royal blue */
+    -fx-background-radius: 5;
+}
+
+/* Separator */
+.separator {
+    -fx-background-color: #1E90FF; /* Dodger blue */
+    -fx-padding: 1;
+    -fx-opacity: 0.7;
+}
+
+/* Game Settings Dialog */
+.dialog-pane {
+    -fx-background-color: #0A1128; /* Deep space dark blue */
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(30,144,255,0.3), 10, 0.2, 0, 2);
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #1E3A8A; /* Deep blue */
+    -fx-background-radius: 10px 10px 0 0;
+}
+
+.dialog-pane .content {
+    -fx-text-fill: #E6F2FF; /* Very light blue */
+    -fx-font-family: 'Orbitron', sans-serif;
+    -fx-font-size: 14px;
+}
+
+.game-settings-label {
+    -fx-text-fill: #E6F2FF;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.game-settings-grid {
+    -fx-background-color: transparent;
+}
+
+.game-settings-combo {
+    -fx-background-color: #1E90FF; /* Dodger blue */
+    -fx-background-radius: 5px;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-border-color: transparent;
+    -fx-border-radius: 5px;
+}
+
+.game-settings-combo .list-cell {
+    -fx-background-color: #4169E1; /* Royal blue */
+    -fx-text-fill: white;
+}
+
+.game-settings-combo .list-view {
+    -fx-background-color: #0A2342; /* Dark navy blue */
+    -fx-text-fill: white;
+}
+
+.dialog-button {
+    -fx-background-color: #00BFFF; /* Deep sky blue */
+    -fx-text-fill: white;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+    -fx-padding: 8px 15px;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-effect: dropshadow(gaussian, rgba(30,144,255,0.2), 5, 0.1, 0, 1);
+    -fx-transition: all 0.2s ease;
+}
+
+.dialog-button:hover {
+    -fx-background-color: #1E90FF; /* Dodger blue */
+    -fx-effect: dropshadow(gaussian, rgba(30,144,255,0.3), 8, 0.2, 0, 2);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.dialog-button:pressed {
+    -fx-background-color: #4169E1; /* Royal blue */
+    -fx-effect: dropshadow(gaussian, rgba(30,144,255,0.1), 3, 0.1, 0, 1);
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}

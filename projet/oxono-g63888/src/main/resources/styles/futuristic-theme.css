@@ -1,0 +1,126 @@
+/* Enhanced Futuristic Cyberpunk Theme */
+
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #0A0E16, #121827);
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.board-container {
+    -fx-background-color: rgba(18, 24, 39, 0.7);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #00FFD1;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 209, 0.4), 25, 0, 0, 0);
+    -fx-padding: 25;
+}
+
+.board-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: #00FFD1;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 10;
+    -fx-min-width: 80px;
+    -fx-min-height: 80px;
+    -fx-cursor: hand;
+    -fx-background-radius: 10;
+    -fx-transition: all 0.3s;
+}
+
+.board-cell:hover {
+    -fx-background-color: linear-gradient(to bottom right,
+    rgba(0, 255, 209, 0.1),
+    rgba(0, 255, 209, 0.3));
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 209, 0.4), 15, 0, 0, 0);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.header {
+    -fx-background-color: rgba(22, 33, 62, 0.8);
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #00FFD1;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 209, 0.4), 15, 0, 0, 0);
+    -fx-padding: 20;
+}
+
+.player-turn-label {
+    -fx-text-fill: #00FFD1;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Orbitron", "Arial Black";
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 209, 0.4), 10, 0, 0, 0);
+}
+
+.game-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #00FFD1;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 12 25;
+    -fx-background-radius: 8;
+    -fx-border-color: #00FFD1;
+    -fx-border-width: 2;
+    -fx-border-radius: 8;
+    -fx-transition: all 0.3s;
+}
+.theme-combo {
+    -fx-background-color: transparent;
+    -fx-background-radius: 8;
+    -fx-text-fill: #00FFD1;
+    -fx-font-size: 14px;
+    -fx-border-color: #00FFD1;
+    -fx-border-width: 2;
+    -fx-padding : 7 15;
+    -fx-border-radius: 5px;
+}
+
+.theme-combo .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #00FFD1; /* Gris foncé pour le contraste */
+}
+
+.theme-combo .list-view {
+    -fx-background-color: rgba(22, 33, 62, 0.8); /* Gris clair bleuté */
+    -fx-text-fill:  #00FFD1; /* Gris foncé neutre */
+}
+.rack-label {
+    -fx-text-fill: #00FFD1;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 2, 0, 0, 0);
+}
+.status-label {
+    -fx-text-fill: #00FFD1;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 2, 0, 0, 0);
+}
+
+.game-button:hover {
+    -fx-background-color: rgba(0, 255, 209, 0.2);
+    -fx-cursor: hand;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 209, 0.4), 15, 0, 0, 0);
+}
+
+/* Additional Cyberpunk Flourishes */
+.valid-move {
+    -fx-background-color: linear-gradient(to bottom right,
+    rgba(0, 255, 209, 0.2),
+    rgba(0, 255, 209, 0.4));
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 209, 0.4), 20, 0, 0, 0);
+}
+
+.hover-move {
+    -fx-background-color: linear-gradient(to bottom right,
+    rgba(0, 255, 209, 0.3),
+    rgba(0, 255, 209, 0.5));
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 209, 0.4), 15, 0, 0, 0);
+}

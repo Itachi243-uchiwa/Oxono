@@ -1,0 +1,111 @@
+/* Enhanced Elegant Light Theme */
+
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #3887d8, #FFFFFF);
+    -fx-font-family: "Segoe UI", "Roboto", "Helvetica Neue";
+}
+
+.board-container {
+    -fx-background-color: rgba(255, 255, 255, 0.35);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: rgba(224, 224, 224, 0.37);
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 15, 0.2, 0, 0);
+    -fx-padding: 25;
+}
+
+.board-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: #3498DB;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-min-width: 80px;
+    -fx-min-height: 80px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s;
+}
+
+.board-cell:hover {
+    -fx-background-color: linear-gradient(to bottom right,
+    rgba(52, 152, 219, 0.05),
+    rgba(52, 152, 219, 0.1));
+    -fx-effect: dropshadow(gaussian,rgba(0, 0, 0, 0.1), 10, 0.2, 0, 0);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.header {
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: rgba(224, 224, 224, 0.53);
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.2, 0, 0);
+    -fx-padding: 20;
+}
+
+.player-turn-label {
+    -fx-text-fill: #2C3E50;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0.1, 0, 0);
+}
+
+.game-button {
+    -fx-background-color: #3498DB;
+    -fx-text-fill: rgba(255, 255, 255, 0.55);
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 12 25;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.2, 0, 0);
+    -fx-transition: all 0.3s;
+}
+.theme-combo {
+    -fx-background-color: #3498DB;
+    -fx-background-radius: 10;
+    -fx-text-fill:  rgba(255, 255, 255, 0.55);
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding : 7 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.2, 0, 0);
+    -fx-transition: all 0.3s;
+}
+
+.theme-combo .list-cell, .theme-combo .list-view {
+    -fx-background-color: #3498DB;
+    -fx-text-fill: rgba(255, 255, 255, 0.55);
+    -fx-transition: all 0.3s;
+}
+.rack-label, .status-label {
+    -fx-text-fill:   #3498DB;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.2, 0, 0);
+    -fx-transition: all 0.3s;
+}
+.game-button:hover {
+    -fx-background-color: rgba(0, 255, 225, 0.3);
+    -fx-cursor: hand;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 12, 0.3, 0, 0);
+}
+
+.valid-move {
+    -fx-background-color: linear-gradient(to bottom right,
+    rgba(52, 152, 219, 0.1),
+    rgba(52, 152, 219, 0.2));
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.2, 0, 0);
+}
+
+.hover-move {
+    -fx-background-color: linear-gradient(to bottom right,
+    rgba(241, 196, 15, 0.2),
+    rgba(241, 196, 15, 0.3));
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0.2, 0, 0);
+}

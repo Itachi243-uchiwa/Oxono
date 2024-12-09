@@ -1,0 +1,100 @@
+/* Authentic Vintage Theme */
+.root {
+    -fx-background-color: #FAF3E0; /* Soft cream background */
+}
+
+.board-container {
+    -fx-background-color: #E8D5B7; /* Light beige board background */
+    -fx-padding: 20;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: #A67C52; /* Warm brown border */
+    -fx-border-width: 3;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 15, 0, 3, 3); /* Subtle vintage shadow */
+}
+
+.board-cell {
+    -fx-background-color: #F4E4C1; /* Soft pastel beige */
+    -fx-border-color: #C4A484; /* Lighter brown */
+    -fx-border-width: 2;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-cursor: hand;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+}
+
+.board-cell:hover {
+    -fx-background-color: #E8CFAF; /* Slightly darker beige for hover */
+    -fx-effect: dropshadow(gaussian, rgba(164, 122, 78, 0.3), 10, 0, 0, 0);
+}
+
+.header {
+    -fx-background-color: #E8D5B7;
+    -fx-padding: 15;
+    -fx-background-radius: 15;
+    -fx-border-color: #A67C52;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 0);
+}
+
+.player-turn-label {
+    -fx-text-fill: #5B4636; /* Dark brown text */
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-font-family: "Courier New"; /* Vintage-style font */
+}
+
+.game-button {
+    -fx-background-color: #A67C52; /* Rich brown */
+    -fx-text-fill: #FAF3E0; /* Cream text */
+    -fx-font-weight: bold;
+    -fx-padding: 10 25;
+    -fx-background-radius: 5;
+    -fx-border-color: #5B4636; /* Darker border for contrast */
+    -fx-border-width: 2;
+    -fx-font-family: "Courier New";
+}
+
+.game-button:hover {
+    -fx-background-color: #5B4636; /* Darker brown */
+    -fx-cursor: hand;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0, 0, 0);
+}
+
+.theme-combo {
+    -fx-background-color: #A67C52;
+    -fx-background-radius: 5;
+    -fx-text-fill: #FAF3E0;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 7 15;
+    -fx-border-color: #5B4636;
+    -fx-border-width: 2;
+}
+
+.theme-combo .list-cell, .theme-combo .list-view {
+    -fx-background-color: #A67C52;
+    -fx-text-fill: #FAF3E0;
+}
+
+.rack-label, .status-label {
+    -fx-text-fill: #5B4636;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 10, 0, 0, 0);
+}
+
+.valid-move {
+    -fx-background-color: rgba(132, 222, 175, 0.2); /* Soft pastel green for valid moves */
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(132, 222, 175, 0.5), 15, 0, 0, 0);
+}
+
+.hover-move {
+    -fx-background-color: rgba(246, 216, 179, 0.5); /* Soft pastel orange for hover */
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(246, 216, 179, 0.5), 10, 0, 0, 0);
+}

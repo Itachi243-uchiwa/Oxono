@@ -1,0 +1,111 @@
+/* Football Theme - Enhanced */
+.root {
+    -fx-background-color: #355E3B;
+    -fx-background-image: url('football-background.jpg');
+    -fx-background-size: cover;
+}
+
+.board-container {
+    -fx-background-color: transparent;
+    -fx-background-position: center;
+    -fx-padding: 20;
+    -fx-background-radius: 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 15, 0, 0, 0);
+    -fx-background-repeat: no-repeat;
+}
+
+.board-cell {
+    -fx-background-color: linear-gradient(to right, rgba(53, 94, 59, 0.7) 50%, rgba(46, 90, 39, 0.7) 50%);
+    -fx-border-color: white;
+    -fx-border-width: 2;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-cursor: hand;
+}
+
+.board-cell:hover {
+    -fx-background-color: rgba(255,255,255,0.3);
+    -fx-effect: innershadow(gaussian, rgba(255,255,255,0.4), 10, 0, 0, 0);
+}
+
+.header {
+    -fx-background-color: transparent;
+    -fx-padding: 15;
+
+    -fx-background-radius: 10;
+}
+
+.player-turn-label {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-family: "Impact";
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 2, 0, 0, 0);
+}
+
+.game-button {
+    -fx-background-color: #CD5C5C;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 5;
+    -fx-border-color: white;
+    -fx-border-width: 2;
+}
+.theme-combo {
+    -fx-background-color: #CD5C5C;
+    -fx-background-radius: 5;
+    -fx-text-fill:  white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-border-width: 2;
+    -fx-border-color: #FFFFFF;
+    -fx-padding : 7 15;
+}
+
+.theme-combo .list-cell, .theme-combo .list-view {
+    -fx-background-color: #CD5C5C;
+    -fx-text-fill:  white;
+}
+.rack-label, .status-label {
+    -fx-text-fill:  white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.game-button:hover {
+    -fx-background-color: #DC143C;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.3), 10, 0, 0, 0);
+    -fx-cursor: hand;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Score Display */
+.score-display {
+    -fx-background-color: rgba(0,0,0,0.7);
+    -fx-padding: 10;
+    -fx-background-radius: 5;
+    -fx-text-fill: white;
+    -fx-font-family: "Impact";
+    -fx-font-size: 24px;
+}
+
+/* Field Lines */
+.field-lines {
+    -fx-stroke: white;
+    -fx-stroke-width: 2;
+    -fx-stroke-dash-array: 10 5;
+}
+
+.valid-move {
+    -fx-background-color: rgba(0, 255, 0, 0.2);
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,0,0.3), 15, 0, 0, 0);
+}
+
+/* Style pour le survol des mouvements */
+.hover-move {
+    -fx-background-color: rgba(244, 235, 208, 0.48);
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(244, 235, 208, 0.6), 15, 0, 0, 0);
+}

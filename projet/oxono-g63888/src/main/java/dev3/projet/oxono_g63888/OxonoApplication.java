@@ -16,11 +16,8 @@ public class OxonoApplication extends Application {
         GameView gameView = new GameView();
         GameController controller = new GameController(game, gameView);
 
-        Scene scene = new Scene(gameView.getRoot(), 1000, 800);
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm());
-
         primaryStage.setTitle("Oxono Game");
-        primaryStage.setScene(scene);
+        primaryStage.setScene(gameView.getScene());
         primaryStage.show();
 
         controller.showStartDialog();

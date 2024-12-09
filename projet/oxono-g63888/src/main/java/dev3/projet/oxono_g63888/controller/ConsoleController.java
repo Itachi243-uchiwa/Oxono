@@ -1,12 +1,12 @@
 package dev3.projet.oxono_g63888.controller;
 
-import dev3.projet.oxono_g63888.model.Game;
-import dev3.projet.oxono_g63888.model.GameState;
+import dev3.projet.oxono_g63888.model.*;
 import dev3.projet.oxono_g63888.model.Observer.Observer;
 import dev3.projet.oxono_g63888.model.Observer.OxonoEvent;
-import dev3.projet.oxono_g63888.model.OxonoException;
 import dev3.projet.oxono_g63888.view.ConsoleView;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 public class ConsoleController implements Observer {

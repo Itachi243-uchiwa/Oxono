@@ -1,9 +1,6 @@
-package dev3.projet.oxono_g63888.view;
+package dev3.projet.oxono_g63888.view.components;
 
-import dev3.projet.oxono_g63888.model.ColorPawn;
 import dev3.projet.oxono_g63888.model.Mark;
-import dev3.projet.oxono_g63888.model.Pawn;
-import dev3.projet.oxono_g63888.model.Totem;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -114,5 +111,5 @@ public class TokenGraphic extends StackPane {
             getChildren().add(circle);
         }
     }
-    
+
 }

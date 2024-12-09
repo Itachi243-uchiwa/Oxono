@@ -10,22 +10,22 @@ import java.util.Optional;
 
 public class GameSettingsDialog {
     public interface StartDialogCallback {
-        void onGameSettingsChosen(int boardSize, int gameMode);
+        void onGameSettingsChosen(int boardSize, int gameMode, String theme);
     }
 
     public interface GameOverDialogCallback {
         void onNewGame();
         void onQuit();
     }
+
     public static void showStartDialog(StartDialogCallback callback) {
         Platform.runLater(() -> {
             Dialog<GameSettings> dialog = new Dialog<>();
             dialog.setTitle("Nouvelle Partie");
             dialog.setHeaderText("Choisissez les paramètres de jeu");
 
-            // Ajout du fichier CSS au dialog
             dialog.getDialogPane().getStylesheets().add(
-                    Objects.requireNonNull(GameSettingsDialog.class.getResource("/styles/styles.css")).toExternalForm()
+                    Objects.requireNonNull(GameSettingsDialog.class.getResource("/styles/space-theme.css")).toExternalForm()
             );
             dialog.getDialogPane().getStyleClass().add("dialog-pane");
 
@@ -53,16 +53,43 @@ public class GameSettingsDialog {
             gameMode.setValue("Humain vs Humain");
             gameMode.getStyleClass().add("game-settings-combo");
 
+            ComboBox<String> theme = new ComboBox<>();
+            theme.getItems().addAll(
+                    "Default",
+                    "Dark",
+                    "Light",
+                    "Retro",
+                    "Vintage",
+                    "Uchiwa",
+                    "Futuristic",
+                    "Colorblind",
+                    "Luxury",
+                    "Cartoon",
+                    "Christmas",
+                    "Cyberpunk",
+                    "Space",
+                    "Football",
+                    "Jungle",
+                    "Naruto vs Sasuke"
+            );
+            theme.setValue("Default");
+            theme.getStyleClass().add("game-settings-combo");
+
             Label boardSizeLabel = new Label("Taille du plateau:");
             boardSizeLabel.getStyleClass().add("game-settings-label");
 
             Label gameModeLabel = new Label("Mode de jeu:");
             gameModeLabel.getStyleClass().add("game-settings-label");
 
+            Label themeLabel = new Label("Thème:");
+            themeLabel.getStyleClass().add("game-settings-label");
+
             grid.add(boardSizeLabel, 0, 0);
             grid.add(boardSize, 1, 0);
             grid.add(gameModeLabel, 0, 1);
             grid.add(gameMode, 1, 1);
+            grid.add(themeLabel, 0, 2);
+            grid.add(theme, 1, 2);
 
             dialog.getDialogPane().setContent(grid);
 
@@ -71,14 +98,22 @@ public class GameSettingsDialog {
 
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == startButtonType) {
-                    return new GameSettings(boardSize.getValue(), gameMode.getSelectionModel().getSelectedIndex() + 1);
+                    return new GameSettings(
+                            boardSize.getValue(),
+                            gameMode.getSelectionModel().getSelectedIndex() + 1,
+                            theme.getValue().toLowerCase()
+                    );
                 }
                 return null;
             });
 
             Optional<GameSettings> result = dialog.showAndWait();
             result.ifPresent(settings ->
-                    callback.onGameSettingsChosen(settings.boardSize, settings.gameMode)
+                    callback.onGameSettingsChosen(
+                            settings.boardSize,
+                            settings.gameMode,
+                            settings.theme
+                    )
             );
         });
     }
@@ -92,7 +127,7 @@ public class GameSettingsDialog {
 
             // Ajouter le fichier CSS
             alert.getDialogPane().getStylesheets().add(
-                    Objects.requireNonNull(GameSettingsDialog.class.getResource("/styles/styles.css")).toExternalForm()
+                    Objects.requireNonNull(GameSettingsDialog.class.getResource("/styles/space-theme.css")).toExternalForm()
             );
             alert.getDialogPane().getStyleClass().add("dialog-pane");
 
@@ -122,7 +157,7 @@ public class GameSettingsDialog {
 
         // Ajouter le fichier CSS
         alert.getDialogPane().getStylesheets().add(
-                Objects.requireNonNull(GameSettingsDialog.class.getResource("/styles/styles.css")).toExternalForm()
+                Objects.requireNonNull(GameSettingsDialog.class.getResource("/styles/space-theme.css")).toExternalForm()
         );
         alert.getDialogPane().getStyleClass().add("dialog-pane");
 
@@ -139,10 +174,13 @@ public class GameSettingsDialog {
     public static class GameSettings {
         final int boardSize;
         final int gameMode;
+        final String theme;
 
-        GameSettings(int boardSize, int gameMode) {
+        GameSettings(int boardSize, int gameMode, String theme) {
             this.boardSize = boardSize;
             this.gameMode = gameMode;
+            this.theme = theme;
         }
     }
+
 }

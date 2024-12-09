@@ -1,0 +1,88 @@
+/* VS Code Theme */
+.root {
+    -fx-background-color: #1E1E1E;
+    -fx-font-family: "Consolas";
+}
+
+.board-container {
+    -fx-background-color: #252526;
+    -fx-padding: 20;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #007ACC;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,122,204,0.2), 10, 0, 0, 0);
+}
+
+.board-cell {
+    -fx-background-color: #2D2D2D;
+    -fx-border-color: #3E3E42;
+    -fx-border-width: 1;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-cursor: hand;
+}
+
+.board-cell:hover {
+    -fx-background-color: #3E3E42;
+    -fx-effect: dropshadow(gaussian, rgba(0,122,204,0.3), 8, 0, 0, 0);
+}
+.list-cell:selected:hover:filled {
+    -fx-background-color: #E0E0E0; /* ou une autre couleur valide */
+}
+
+.header {
+    -fx-background-color: #252526;
+    -fx-padding: 15;
+    -fx-background-radius: 6;
+    -fx-border-color: #3E3E42;
+    -fx-border-radius: 6;
+}
+
+.player-turn-label {
+    -fx-text-fill: #D4D4D4;
+    -fx-font-size: 16px;
+    -fx-font-family: "Consolas";
+    -fx-font-weight: bold;
+}
+
+.game-button {
+    -fx-background-color: #007ACC;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Consolas";
+    -fx-padding: 8 16;
+    -fx-background-radius: 4;
+}
+.theme-combo {
+    -fx-background-color: #007ACC;
+    -fx-background-radius: 4;
+    -fx-text-fill:  #ffffff;
+    -fx-font-size: 14px;
+    -fx-padding : 7 15;
+}
+
+.theme-combo .list-cell, .theme-combo .list-view {
+    -fx-background-color: #007ACC;
+    -fx-text-fill:  #FFFFFF;
+}
+.rack-label, .status-label {
+    -fx-text-fill:  #FFFFFF;
+    -fx-font-size: 16px;
+}
+
+.game-button:hover {
+    -fx-background-color: #0098FF;
+    -fx-cursor: hand;
+}
+.valid-move {
+    -fx-background-color: rgba(0, 255, 0, 0.2);
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 255, 225, 0.3), 15, 0, 0, 0);
+}
+
+/* Style pour le survol des mouvements */
+.hover-move {
+    -fx-background-color: rgba(244, 235, 208, 0.48);
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(105, 193, 255, 0.1), 15, 0, 0, 0);
+}

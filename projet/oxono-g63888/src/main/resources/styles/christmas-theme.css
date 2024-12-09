@@ -1,0 +1,105 @@
+/* Christmas Theme - Enhanced */
+.root {
+    -fx-background-color: #1C3144;
+    -fx-background-image: url('christmas.jpg');
+    -fx-background-size: cover;
+
+}
+
+@keyframes snowfall {
+    from { -fx-background-position: 0 0; }
+    to { -fx-background-position: 0 1000px; }
+}
+
+.board-container {
+    -fx-background-color: transparent;
+    -fx-background-position: center;
+    -fx-background-repeat: no-repeat;
+    -fx-padding: 20;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #C41E3A;
+    -fx-border-width: 3;
+    -fx-effect: dropshadow(gaussian, rgba(196,30,58,0.3), 15, 0, 0, 0);
+}
+
+.board-cell {
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-border-color: #E8B62C;
+    -fx-border-width: 2;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-cursor: hand;
+}
+
+.board-cell:hover {
+    -fx-background-color: rgba(232,182,44,0.2);
+    -fx-effect: dropshadow(gaussian, rgba(232,182,44,0.4), 10, 0, 0, 0);
+}
+
+.header {
+    -fx-background-color: transparent;
+    -fx-padding: 15;
+    -fx-background-radius: 10;
+    -fx-border-color: #C41E3A;
+    -fx-border-radius: 10;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
+}
+
+.player-turn-label {
+    -fx-text-fill: #FFFFFF;
+    -fx-font-size: 18px;
+    -fx-font-family: "Mountains of Christmas";
+    -fx-effect: dropshadow(gaussian, rgba(196,30,58,0.5), 2, 0, 0, 0);
+}
+
+.game-button {
+    -fx-background-color: #C41E3A;
+    -fx-text-fill: #FFFFFF;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);
+}
+
+.theme-combo {
+    -fx-background-color: #C41E3A;
+    -fx-background-radius: 25;
+    -fx-text-fill:  #FFFFFF;
+    -fx-font-size: 14px;
+    -fx-border-width: 2;
+    -fx-padding : 7 15;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);
+}
+
+.theme-combo .list-cell, .theme-combo .list-view {
+    -fx-background-color: #C41E3A;
+    -fx-text-fill:  #FFFFFF;
+}
+.rack-label, .status-label {
+    -fx-text-fill:  #FFFFFF;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);
+}
+.game-button:hover {
+    -fx-background-color: #E82647;
+    -fx-effect: dropshadow(gaussian, rgba(232,182,44,0.5), 15, 0, 0, 0);
+    -fx-cursor: hand;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.valid-move {
+    -fx-background-color: rgba(0, 255, 0, 0.2);
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,0,0.3), 15, 0, 0, 0);
+}
+
+/* Style pour le survol des mouvements */
+.hover-move {
+    -fx-background-color: rgba(244, 235, 208, 0.48);
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(244, 235, 208, 0.6), 15, 0, 0, 0);
+}

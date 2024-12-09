@@ -1,4 +1,4 @@
-package dev3.projet.oxono_g63888.view;
+package dev3.projet.oxono_g63888.view.utils;
 
 import javafx.animation.*;
 import javafx.scene.Node;

@@ -1,0 +1,108 @@
+/* Colorblind-friendly Theme - Enhanced */
+.root {
+    -fx-background-color: rgba(255, 255, 255, 0.77);
+}
+
+.board-container {
+    -fx-background-color: rgba(245, 245, 245, 0.8);
+    -fx-padding: 20;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: #000000;
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 0);
+}
+
+.board-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: #000000;
+    -fx-border-width: 2;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-cursor: hand;
+    -fx-text-fill: #000000;
+}
+
+.board-cell:hover {
+    -fx-background-color: rgba(0,0,0,0.1);
+}
+
+.header {
+    -fx-background-color: #F5F5F5;
+    -fx-padding: 15;
+    -fx-background-radius: 10;
+    -fx-border-color: #000000;
+    -fx-border-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 0);
+}
+
+.player-turn-label {
+    -fx-text-fill: #000000;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.game-button {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill: #000000;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 5;
+    -fx-border-color: #000000;
+    -fx-border-width: 2;
+    -fx-border-style: solid;
+}
+.theme-combo {
+    -fx-background-color: #FFFFFF;
+    -fx-background-radius: 5;
+    -fx-text-fill:  #000000;
+    -fx-font-size: 14px;
+    -fx-border-width: 2;
+    -fx-border-color: #000000;
+    -fx-padding : 7 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);
+}
+
+.theme-combo .list-cell, .theme-combo .list-view {
+    -fx-background-color: #FFFFFF;
+    -fx-text-fill:  #000000;
+}
+.rack-label, .status-label {
+    -fx-text-fill:  #000000;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);
+}
+
+.game-button:hover {
+    -fx-background-color: #E0E0E0;
+    -fx-cursor: hand;
+}
+
+/* Improved visibility for valid and hover moves */
+.valid-move {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+    -fx-background-radius: 5;
+    -fx-border-color: #008000;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+}
+
+.hover-move {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
+    -fx-background-radius: 5;
+    -fx-border-color: #FFA500;
+    -fx-border-width: 2;
+    -fx-border-radius: 5;
+}
+
+/* Ensure high contrast for all interactive elements */
+.board-cell:disabled {
+    -fx-opacity: 0.6;
+}
+
+/* Add text indicators for better accessibility */
+.board-cell-text {
+    -fx-font-weight: bold;
+    -fx-text-fill: #000000;
+}

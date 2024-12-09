@@ -1,0 +1,145 @@
+/* Theme Moderne et Luxueux */
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #1C1C1C, #2D2D2D);
+}
+
+.board-container {
+    -fx-background-color: linear-gradient(to bottom right, #2A2A2A, #383838);
+    -fx-padding: 25;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-color: linear-gradient(to bottom right, #B8860B, #FFD700);
+    -fx-border-width: 2;
+    -fx-effect: dropshadow(gaussian, rgba(184,134,11,0.4), 20, 0, 0, 0);
+}
+
+.board-cell {
+    -fx-background-color: linear-gradient(to bottom right, #2E2E2E, #3D3D3D);
+    -fx-border-color: linear-gradient(to bottom right, #B8860B, #FFD700);
+    -fx-border-width: 0.5;
+    -fx-min-width: 75px;
+    -fx-min-height: 75px;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+.board-cell:hover {
+    -fx-background-color: linear-gradient(to bottom right, #3A3A3A, #494949);
+    -fx-effect: dropshadow(gaussian, rgba(184,134,11,0.3), 10, 0, 0, 0);
+}
+
+.valid-move {
+    -fx-background-color: linear-gradient(to bottom right, rgba(184,134,11,0.2), rgba(255,215,0,0.2));
+    -fx-effect: dropshadow(gaussian, rgba(184,134,11,0.4), 15, 0, 0, 0);
+}
+
+.hover-move {
+    -fx-background-color: linear-gradient(to bottom right, rgba(255,25,0,0.1), rgba(218,165,32,0.1));
+    -fx-effect: dropshadow(gaussian, rgba(218,165,3,0.3), 12, 0, 0, 0);
+}
+
+.game-button {
+    -fx-background-color: linear-gradient(to bottom right, #B8860B, #DAA520);
+    -fx-text-fill: #FFFFFF;
+    -fx-font-family: "Montserrat";
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 12 24;
+    -fx-background-radius: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);
+}
+.theme-combo {
+    -fx-background-color: linear-gradient(to bottom right, #B8860B, #DAA520);
+    -fx-background-radius: 25;
+    -fx-text-fill:  white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding : 7 15;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);
+    -fx-transition: all 0.3s;
+}
+
+.theme-combo .list-cell, .theme-combo .list-view {
+    -fx-background-color: linear-gradient(to bottom right, #B8860B, #DAA520);
+    -fx-text-fill: white;
+    -fx-transition: all 0.3s;
+}
+.game-button:hover {
+    -fx-background-color: linear-gradient(to bottom right, #DAA520, #FFD700);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 12, 0, 0, 0);
+    -fx-cursor: hand;
+}
+
+.game-button:pressed {
+    -fx-background-color: linear-gradient(to bottom right, #A67B0B, #B8860B);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 0);
+}
+
+.player-turn-label {
+    -fx-text-fill: #FFD700;
+    -fx-font-family: "Montserrat";
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(184,134,11,0.5), 2, 0, 0, 0);
+}
+
+
+.status-label, .rack-label {
+    -fx-text-fill: #DAA520;
+    -fx-font-family: "Montserrat";
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+
+.rack-container {
+    -fx-background-color: linear-gradient(to bottom right, #2A2A2A, #383838);
+    -fx-border-color: linear-gradient(to bottom right, #B8860B, #FFD700);
+    -fx-border-width: 2;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(184,134,11,0.3), 15, 0, 0, 0);
+}
+
+.pawns-container {
+    -fx-background-color: linear-gradient(to bottom right, #333333, #404040);
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-effect: innershadow(gaussian, rgba(0,0,0,0.3), 5, 0, 0, 0);
+}
+
+/* Animation pour les pièces gagnantes */
+.winning-piece {
+    -fx-effect: dropshadow(gaussian, #FFD700, 20, 0.5, 0, 0);
+    -fx-animation: winning-glow 1.5s infinite alternate;
+}
+
+@keyframes winning-glow {
+    from {
+        -fx-effect: dropshadow(gaussian, #FFD700, 20, 0.5, 0, 0);
+    }
+    to {
+        -fx-effect: dropshadow(gaussian, #B8860B, 30, 0.8, 0, 0);
+    }
+}
+
+/* Style pour le séparateur */
+.separator {
+    -fx-background-color: linear-gradient(to right, transparent, #B8860B, transparent);
+    -fx-opacity: 0.6;
+}
+
+/* Style pour les tooltips */
+.tooltip {
+    -fx-background-color: #2A2A2A;
+    -fx-text-fill: #FFD700;
+    -fx-font-family: "Montserrat";
+    -fx-font-size: 12px;
+    -fx-padding: 8 12;
+    -fx-background-radius: 5;
+    -fx-border-color: #B8860B;
+    -fx-border-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 0);
+}

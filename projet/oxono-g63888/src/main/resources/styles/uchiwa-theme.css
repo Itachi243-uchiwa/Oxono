@@ -1,0 +1,122 @@
+
+.root {
+    -fx-background-color: black; /* Fond noir */
+    -fx-background-image: url('uchiwa.jpg'); /* Image de fond */ /* Centrer l'image */
+    -fx-background-repeat: no-repeat;
+}
+
+/* Style du conteneur principal du jeu */
+.board-container {
+    -fx-background-color: transparent; /* Fond noir semi-transparent */
+    -fx-padding: 20;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.5), 10, 0.5, 0, 0);
+}
+
+/* Style des cellules du plateau */
+.board-cell {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(255, 0, 0, 0.8); /* Rouge intense */
+    -fx-border-width: 1;
+    -fx-min-width: 70px;
+    -fx-min-height: 70px;
+    -fx-cursor: hand;
+}
+
+.board-cell:hover {
+    -fx-background-color: rgba(255, 0, 0, 0.2); /* Rouge semi-transparent */
+}
+
+/* Style pour les mouvements valides */
+.valid-move {
+    -fx-background-color: rgba(0, 255, 0, 0.2);
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,255,0,0.3), 15, 0, 0, 0);
+}
+
+/* Style pour le survol des mouvements */
+.hover-move {
+    -fx-background-color: rgba(244, 235, 208, 0.48);
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(244, 235, 208, 0.6), 15, 0, 0, 0);
+}
+
+/* Style de l'en-tête */
+.header {
+    -fx-background-color: transparent;
+    -fx-padding: 15;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(255,0,0,0.3), 8, 0, 0, 0);
+}
+
+/* Style des boutons */
+.game-button {
+    -fx-background-color: #FF0000; /* Rouge intense */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.5), 10, 0.5, 0, 0);
+}
+
+.game-button:hover {
+    -fx-background-color: #FF4D4D; /* Rouge clair au survol */
+    -fx-cursor: hand;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+.theme-combo {
+    -fx-background-color: #FF0000;
+    -fx-background-radius: 5;
+    -fx-text-fill:  #FFFFFF;
+    -fx-font-size: 14px;
+    -fx-border-width: 2;
+    -fx-padding : 7 15;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.5), 10, 0.5, 0, 0);
+}
+
+.theme-combo .list-cell {
+    -fx-background-color: #FF0000;
+    -fx-text-fill:  #FFFFFF;
+}
+
+.theme-combo .list-view {
+    -fx-background-color: #FF0000; /* Gris clair bleuté */
+    -fx-text-fill: #FFFFFF; /* Gris foncé neutre */
+}
+.rack-label {
+    -fx-text-fill:  #FFFFFF;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.5), 10, 0.5, 0, 0);
+}
+.status-label {
+    -fx-text-fill:  #FFFFFF;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.5), 10, 0.5, 0, 0);
+}
+
+.game-button:pressed {
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* Style des racks des joueurs */
+.rack-container {
+    -fx-background-color: transparent;
+    -fx-padding: 20;
+    -fx-background-radius: 10;
+    -fx-spacing: 15;
+    -fx-effect: dropshadow(gaussian, rgba(255, 0, 0, 0.4), 10, 0.5, 0, 0);
+}
+
+/* Style des labels */
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 2, 0, 0, 0);
+}

@@ -39,9 +39,10 @@ public class GameController implements Observer {
     }
 
     public void showStartDialog() {
-        GameSettingsDialog.showStartDialog((boardSize, gameMode) -> {
+        GameSettingsDialog.showStartDialog((boardSize, gameMode, theme) -> {
             gameOver = false;
             game.initializeGame(boardSize, gameMode);
+            view.updateTheme(theme);
             setButtonsState(true);
             updateAIButtonState();
             view.setStatus("La partie commence! C'est au tour du joueur " +
@@ -193,7 +194,7 @@ public class GameController implements Observer {
                 case GAME_START -> {
                     setButtonsState(true);
                     updateAIButtonState();
-                    view.updateBoard(game);
+                    view.displayBoard(game);
                     view.setStatus("La partie commence!");
 
                 }
