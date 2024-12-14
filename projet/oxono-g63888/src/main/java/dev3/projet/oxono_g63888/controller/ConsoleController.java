@@ -5,15 +5,13 @@ import dev3.projet.oxono_g63888.model.Observer.Observer;
 import dev3.projet.oxono_g63888.model.Observer.OxonoEvent;
 import dev3.projet.oxono_g63888.view.ConsoleView;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 
 public class ConsoleController implements Observer {
     private final Game game;
     private final ConsoleView view;
-    private int aiChoice;
     private int boardSize;
+    private int aiChoice;
 
     public ConsoleController(Game game, ConsoleView view) {
         this.game = game;
@@ -25,13 +23,14 @@ public class ConsoleController implements Observer {
         view.displayMenu();
         boardSize = view.getBoardSize();
         aiChoice = view.getAIChoice();
-
         processGameCommands();
     }
 
     private void processGameCommands() {
-        while (true) {
-            String command = view.getCommandInput();
+        view.getCommandInput();
+
+        while (game.getGameState() != GameState.GAME_OVER) {
+            String command = view.getNextLine();
             InputRegexPattern parser = InputRegexPattern.findCommand(command);
 
             if (parser == null) {
@@ -52,58 +51,29 @@ public class ConsoleController implements Observer {
         if (!matcher.matches()) return;
 
         switch (parser) {
-            case START -> startNewGame();
+            case START -> game.initializeGame(boardSize, aiChoice);
             case RESTART -> restartGame();
-            case UNDO -> performUndo();
-            case REDO -> performRedo();
-            case SURRENDER -> handleSurrender();
+            case UNDO -> game.undo();
+            case REDO -> game.redo();
+            case SURRENDER -> game.surrender();
             case HELP -> view.displayHelp();
             case QUIT -> handleQuit();
-            case AI_MOVE -> processAIMove();
+            case AI_MOVE -> game.playAITurn();
             case TOTEM_MOVE, PAWN_MOVE -> processPlayerMove(parser, matcher);
         }
-    }
 
-    private void startNewGame() throws OxonoException {
-        game.initializeGame(boardSize, aiChoice);
-        playGameLoop();
+        if (game.getGameState() != GameState.GAME_OVER) {
+            playNextTurn();
+        }
     }
 
     private void restartGame() throws OxonoException {
-        if (game.getGameState() == GameState.STARTED) {
+        if (game.getGameState() != GameState.STARTED) {
             game.initializeGame(boardSize, aiChoice);
             view.showRestartMessage();
-            playGameLoop();
         } else {
             throw new OxonoException("La partie n'a pas encore commencé.");
         }
-    }
-
-    private void performUndo() throws OxonoException {
-        validateGameStarted();
-        game.undo();
-        continueGameAfterUndoRedo();
-    }
-
-    private void performRedo() throws OxonoException {
-        validateGameStarted();
-        game.redo();
-        continueGameAfterUndoRedo();
-    }
-
-    private void continueGameAfterUndoRedo() {
-        if (game.isCurrentPlayerAI()) {
-            playGameLoop();
-        } else {
-            playPlayerTurn();
-        }
-    }
-
-    private void handleSurrender() throws OxonoException {
-        validateGameStarted();
-        view.showSurrenderMessage();
-        game.surrender();
-        System.exit(0);
     }
 
     private void handleQuit() {
@@ -111,157 +81,61 @@ public class ConsoleController implements Observer {
         System.exit(0);
     }
 
-    private void validateGameStarted() throws OxonoException {
-        if (game.getGameState() == null || game.getGameState() == GameState.GAME_OVER) {
-            throw new OxonoException("La partie n'a pas encore commencé.");
-        }
-    }
-
-    private void processAIMove() throws OxonoException {
-        if (game.getGameState() == GameState.AI_TURN) {
-            game.playAITurn();
-        }
-    }
-
     private void processPlayerMove(InputRegexPattern moveType, Matcher matcher) throws OxonoException {
-        if (game.getGameState() != GameState.AI_TURN) {
-            if (moveType == InputRegexPattern.TOTEM_MOVE && game.getGameState() == GameState.WAITING_FOR_TOTEM) {
-                processTotemMove(matcher);
-            } else if (moveType == InputRegexPattern.PAWN_MOVE && game.getGameState() == GameState.WAITING_FOR_PAWN) {
-                processPawnMove(matcher);
-            }
-        }
-    }
+        if (game.getGameState() == GameState.AI_TURN) return;
 
-    private void processTotemMove(Matcher matcher) throws OxonoException {
-        String totemType = matcher.group(1);
+        String pieceType = matcher.group(1);
         int row = Integer.parseInt(matcher.group(2));
         int col = Integer.parseInt(matcher.group(3));
-        game.processTotemInput(String.format("%s %d %d", totemType, row, col));
-    }
+        String input = String.format("%s %d %d", pieceType, row, col);
 
-    private void processPawnMove(Matcher matcher) throws OxonoException {
-        String pawnType = matcher.group(1);
-        int row = Integer.parseInt(matcher.group(2));
-        int col = Integer.parseInt(matcher.group(3));
-        game.processPawnInput(String.format("%s %d %d", pawnType, row, col));
-    }
-
-    private void playGameLoop() {
-        do {
-
-            if (game.isCurrentPlayerAI()) {
-                playAITurn();
-            } else {
-                playPlayerTurn();
-            }
-
-        } while (game.getGameState() != GameState.GAME_OVER);
-
-    }
-
-    private void playAITurn() {
-        System.out.println("C'est au tour de l'IA " + game.getToString() +
-                ". Appuyez sur Entrée pour que l'IA joue.");
-
-        String input = view.getNextLine();
-        processAITurnInput(input);
-    }
-
-    private void processAITurnInput(String input) {
-        try {
-            InputRegexPattern command = InputRegexPattern.findCommand(input);
-            if (command == InputRegexPattern.AI_MOVE) {
-                game.playAITurn();
-            } else if (command != null) {
-                executeCommand(command, input);
-            } else {
-                view.showErrorMessage("Commande invalide. Appuyez simplement sur Entrée pour faire jouer l'IA.");
-            }
-        } catch (OxonoException e) {
-            view.showErrorMessage(e.getMessage());
+        if (moveType == InputRegexPattern.TOTEM_MOVE && game.getGameState() == GameState.WAITING_FOR_TOTEM) {
+            game.processTotemInput(input);
+        } else if (moveType == InputRegexPattern.PAWN_MOVE && game.getGameState() == GameState.WAITING_FOR_PAWN) {
+            game.processPawnInput(input);
         }
     }
 
-    private void playPlayerTurn() {
-        if (game.isUndoRedoInProgress()) {
-            return;
-        }
-        if (game.getGameState() != GameState.GAME_OVER) {
-
-            if (game.getGameState() == GameState.WAITING_FOR_TOTEM) {
-                processPlayerInput("totem");
-            }
-            if (game.getGameState() == GameState.WAITING_FOR_PAWN) {
-                processPlayerInput("pion");
-            }
-
-        }
-
-    }
-
-    private void processPlayerInput(String pieceType) {
-        boolean validMove = false;
-        InputRegexPattern expectedPattern = pieceType.equals("totem") ?
-                InputRegexPattern.TOTEM_MOVE : InputRegexPattern.PAWN_MOVE;
-
-        while (!validMove && game.getGameState() != GameState.GAME_OVER) {
-            try {
-                String prompt = pieceType.equals("totem") ?
-                        "Entrez la position de votre totem (ex : X 2 3)" :
-                        "Entrez la position de votre pion (ex : RX 2 3)";
-
-                String input = view.getPlayerInput(game.getToString(), prompt);
-                validMove = handlePlayerInput(input, expectedPattern);
-            } catch (OxonoException e) {
-                view.showErrorMessage("Erreur lors de l'entrée du " + pieceType + ": " + e.getMessage());
-            }
-        }
-    }
-
-    private boolean handlePlayerInput(String input, InputRegexPattern expectedPattern) throws OxonoException {
-        InputRegexPattern command = InputRegexPattern.findCommand(input);
-
-        if (command == null) {
-            throw new OxonoException("Entrée invalide. Veuillez respecter le format demandé.");
-        }
-
-        if (command == expectedPattern) {
-            executeCommand(command, input);
-            return true;
+    private void playNextTurn() {
+        if (game.isCurrentPlayerAI()) {
+            view.showAIMessage(game.getToString());
         } else {
-            executeCommand(command, input);
-            return false;
+            String prompt = (game.getGameState() == GameState.WAITING_FOR_TOTEM) ?
+                    "Entrez la position de votre totem (ex : X 2 3)" :
+                    "Entrez la position de votre pion (ex : RX 2 3)";
+            view.getPlayerInput(game.getToString(), prompt);
         }
     }
 
     @Override
     public void update(Game game, OxonoEvent event) {
-        switch (event.getEvent()) {
-            case GAME_START:
-                view.displayMenu();
-                break;
-            case MOVE_TOTEM:
-                System.out.println("Move totem");
-                break;
-            case PLACE_PAWN:
-
-                break;
-            case WIN:
-                view.showWinMessage(game.getToString());
-                break;
-            case DRAW:
-                view.showDrawMessage();
-                break;
-            case UNDO:
-                view.showUndoMessage();
-                break;
-            case REDO:
-                view.showRedoMessage();
-                break;
-        }
         view.displayBoard(game);
         view.displayRack(game.getRemainingPawns());
+
+        switch (event.getEvent()) {
+            case WIN -> handleGameOver(true);
+            case DRAW -> handleGameOver(false);
+            case UNDO -> view.showUndoMessage();
+            case REDO -> view.showRedoMessage();
+        }
     }
 
+    private void handleGameOver(boolean isWin) {
+        if (isWin) {
+            view.showWinMessage(game.getToString());
+        } else {
+            view.showDrawMessage();
+        }
+
+        if (view.showRestart().equalsIgnoreCase("yes")) {
+            try {
+                restartGame();
+            } catch (OxonoException e) {
+                view.showErrorMessage(e.getMessage());
+            }
+        } else {
+            handleQuit();
+        }
+    }
 }
+

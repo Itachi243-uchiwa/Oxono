@@ -28,6 +28,9 @@ public class GameController implements Observer {
         setupEventHandlers();
     }
 
+    /**
+     * Sets up event handlers for buttons and initializes the game state.
+     */
     private void setupEventHandlers() {
         view.getUndoButton().setOnAction(e -> handleUndo());
         view.getRedoButton().setOnAction(e -> handleRedo());
@@ -38,6 +41,9 @@ public class GameController implements Observer {
         setButtonsState(false);
     }
 
+    /**
+     * Displays a dialog to configure game settings before starting a new game.
+     */
     public void showStartDialog() {
         GameSettingsDialog.showStartDialog((boardSize, gameMode, theme) -> {
             gameOver = false;
@@ -45,39 +51,46 @@ public class GameController implements Observer {
             view.updateTheme(theme);
             setButtonsState(true);
             updateAIButtonState();
-            view.setStatus("La partie commence! C'est au tour du joueur " +
-                    (game.getColorPlayer() == ColorPawn.PINK ? "Rose" : "Noir"));
+            view.setStatus("The game starts! It's player " +
+                    (game.getColorPlayer() == ColorPawn.PINK ? "Pink" : "Black") + "'s turn.");
         });
     }
 
+    /**
+     * Handles the end of the game, displaying the winner and offering options to restart or quit.
+     *
+     * @param winner   The winning player, or null if the game is a draw.
+     * @param surround True if the game ended due to a surrender.
+     */
     private void handleGameOver(String winner, boolean surround) {
         gameOver = true;
         setButtonsState(false);
-        String message = winner == null ?
-                "Match nul!" :
-                "Victoire du joueur " + (winner) + "!";
+        String message = (winner == null) ?
+                "Draw!" :
+                "Player " + winner + " wins!";
         if (surround) {
-            message = (winner) + " a gagné la partie! par Abandon";
+            message = winner + " has won the game by surrender!";
         }
 
-        GameSettingsDialog.showGameOverDialog(message, new GameSettingsDialog.GameOverDialogCallback() {
-            @Override
-            public void onNewGame() {
-                showStartDialog();
-            }
-
-            @Override
-            public void onQuit() {
-                Platform.exit();
-            }
-        });
+        GameSettingsDialog.showGameOverDialog(
+                message,
+                this::showStartDialog,
+                Platform::exit
+        );
     }
 
+    /**
+     * Displays a confirmation dialog for quitting the game.
+     */
     private void handleQuit() {
         GameSettingsDialog.showQuitConfirmationDialog(Platform::exit);
     }
 
-
+    /**
+     * Updates the enabled state of game buttons based on the game status.
+     *
+     * @param enabled True to enable the buttons, false to disable them.
+     */
     private void setButtonsState(boolean enabled) {
         view.getUndoButton().setDisable(!enabled || gameOver);
         view.getRedoButton().setDisable(!enabled || gameOver);
@@ -85,18 +98,32 @@ public class GameController implements Observer {
         aiMove.setDisable(!enabled || gameOver || !game.isCurrentPlayerAI());
     }
 
+    /**
+     * Updates the enabled state of the AI move button based on the current player's type.
+     */
     private void updateAIButtonState() {
         aiMove.setDisable(!game.isCurrentPlayerAI());
     }
 
+    /**
+     * Performs an AI move if it is the AI's turn and the game is not over.
+     */
     private void performAIMove() {
         if (gameOver || !game.isCurrentPlayerAI()) return;
         game.playAITurn();
         updateAIButtonState();
     }
 
+    /**
+     * Handles the logic for selecting or moving a game piece when a cell is clicked.
+     *
+     * @param pos The position of the clicked cell.
+     */
     public void handleCellClick(Position pos) {
-        if (gameOver || game.isCurrentPlayerAI()) return;
+        if (gameOver || game.isCurrentPlayerAI()) {
+            view.setStatus("It's the AI's turn to play.");
+            return;
+        }
 
         try {
             clickedPos = pos;
@@ -104,13 +131,13 @@ public class GameController implements Observer {
 
             if (token instanceof Totem) {
                 if (selectedTotemPosition != null && !isPlacingTotem) {
-                    view.setStatus("Vous devez d'abord placer un pion avant de déplacer un autre totem!");
+                    view.setStatus("You must place a pawn before moving another totem!");
                     return;
                 }
                 handleTotemSelection();
             } else if (isPlacingTotem && selectedTotemPosition != null) {
                 handleTotemMovement(pos);
-                view.setStatus("Sélectionnez où placer votre pion");
+                view.setStatus("Select where to place your pawn.");
             } else if (selectedTotemPosition != null) {
                 boolean pawnMoved = handlePawnPlacement(pos);
                 if (pawnMoved) {
@@ -125,67 +152,102 @@ public class GameController implements Observer {
         } catch (OxonoException e) {
             handleMoveError(e.getMessage());
         }
-
     }
 
+    /**
+     * Handles the selection of a totem piece.
+     */
     private void handleTotemSelection() {
         selectedTotemPosition = clickedPos;
         List<Position> positions = game.getMovesPossilesForTotem(selectedTotemPosition);
         view.highlightPossibleMoves(positions, "valid-move");
         isPlacingTotem = true;
-        view.setStatus("Sélectionnez où déplacer le totem");
+        view.setStatus("Select where to move the totem.");
     }
 
+    /**
+     * Handles the movement of a totem piece to a new position.
+     *
+     * @param pos The new position for the totem.
+     * @throws OxonoException If the move is invalid.
+     */
     private void handleTotemMovement(Position pos) throws OxonoException {
         Mark mark = game.getMarkTotem(selectedTotemPosition);
-        game.processTotemInput( mark + " " + pos.row() + " " + pos.column());
+        game.processTotemInput(mark + " " + pos.row() + " " + pos.column());
         isPlacingTotem = false;
         selectedTotemPosition = clickedPos;
         List<Position> positions = game.positionsInsert(clickedPos);
         view.highlightPossibleMoves(positions, "hover-move");
-
     }
 
+    /**
+     * Handles the placement of a pawn on the board.
+     *
+     * @param pos The position to place the pawn.
+     * @return True if the pawn was successfully placed, false otherwise.
+     * @throws OxonoException If the move is invalid.
+     */
     private boolean handlePawnPlacement(Position pos) throws OxonoException {
         Mark mark = game.getMarkTotem(selectedTotemPosition);
         game.processPawnInput("R" + mark + " " + pos.row() + " " + pos.column());
         return true;
     }
 
+    /**
+     * Handles errors that occur during a move.
+     *
+     * @param message The error message to display.
+     */
     private void handleMoveError(String message) {
-        view.setStatus("Coup invalide: " + message);
+        view.setStatus("Invalid move: " + message);
         isPlacingTotem = false;
         selectedTotemPosition = null;
     }
-        private void handleUndo() {
+
+    /**
+     * Handles the undo operation to revert the last move.
+     */
+    private void handleUndo() {
         if (!gameOver) {
             boolean undo = game.undo();
             if (undo) {
-                view.setStatus("Coup annulé");
+                view.setStatus("Move undone.");
                 updateAIButtonState();
                 isPlacingTotem = false;
                 selectedTotemPosition = null;
-                updateAIButtonState();
             } else {
-                view.setStatus("Aucun coup à annuler");
+                view.setStatus("No moves to undo.");
             }
         }
     }
 
+    /**
+     * Handles the redo operation to reapply the last undone move.
+     */
     private void handleRedo() {
         if (!gameOver) {
             boolean redo = game.redo();
-            if (redo){
-            updateAIButtonState();
-        } else {
-            view.setStatus("Aucun coup à retablir ");
+            if (redo) {
+                updateAIButtonState();
+            } else {
+                view.setStatus("No moves to redo.");
             }
         }
     }
 
+    /**
+     * Handles the surrender action, ending the game with the opponent as the winner.
+     */
     private void handleSurrender() {
-            game.surrender();
+        game.surrender();
     }
+
+    /**
+     * Updates the game view in response to game state changes.
+     *
+     * @param game  The current game instance.
+     * @param event The event that triggered the update.
+     */
     @Override
     public void update(Game game, OxonoEvent event) {
         Platform.runLater(() -> {
@@ -221,7 +283,6 @@ public class GameController implements Observer {
                 }
                 case DRAW -> {
                     handleGameOver(null, false);
-                    System.out.println("ici 4");
                 }
                 case SURRENDER -> {
                     Player playerWin = event.getEventData("PlayerWin", Player.class);

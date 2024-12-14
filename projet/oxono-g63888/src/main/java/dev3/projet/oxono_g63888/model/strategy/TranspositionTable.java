@@ -1,37 +1,36 @@
-// TranspositionTable.java
 package dev3.projet.oxono_g63888.model.strategy;
 
-import dev3.projet.oxono_g63888.model.Position;
 import java.util.HashMap;
 import java.util.Map;
 
 public class TranspositionTable {
-    private static final int DEFAULT_SIZE = 1000000;
-    private final Map<Long, Entry> table;
-    private final int maxSize;
+    private final Map<Long, TranspositionEntry> table;
 
     public TranspositionTable() {
-        this(DEFAULT_SIZE);
-    }
-
-    public TranspositionTable(int maxSize) {
-        this.maxSize = maxSize;
         this.table = new HashMap<>();
     }
 
-    public void store(long zobristHash, int depth, int score, Move moveTotem, Move movePawn) {
-        if (table.size() >= maxSize) {
-            // Simple stratégie de remplacement : supprimer une entrée aléatoire
-            if (!table.isEmpty()) {
-                table.remove(table.keySet().iterator().next());
-            }
+    public TranspositionEntry get(long hash) {
+        return table.get(hash);
+    }
+
+    public void put(long hash, TranspositionEntry entry) {
+        table.put(hash, entry);
+    }
+
+    public static class TranspositionEntry {
+        final int score;
+        final int depth;
+        final int flag;
+
+        public static final int EXACT = 0;
+        public static final int LOWER_BOUND = 1;
+        public static final int UPPER_BOUND = 2;
+
+        public TranspositionEntry(int score, int depth, int flag) {
+            this.score = score;
+            this.depth = depth;
+            this.flag = flag;
         }
-        table.put(zobristHash, new Entry(depth, score, moveTotem, movePawn));
     }
-
-    public Entry probe(long zobristHash) {
-        return table.get(zobristHash);
-    }
-
-    public record Entry(int depth, int score, Move moveTotem, Move movePawn) {}
 }

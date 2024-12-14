@@ -13,10 +13,6 @@ public class GameSettingsDialog {
         void onGameSettingsChosen(int boardSize, int gameMode, String theme);
     }
 
-    public interface GameOverDialogCallback {
-        void onNewGame();
-        void onQuit();
-    }
 
     public static void showStartDialog(StartDialogCallback callback) {
         Platform.runLater(() -> {
@@ -118,36 +114,38 @@ public class GameSettingsDialog {
         });
     }
 
-    public static void showGameOverDialog(String message, GameOverDialogCallback callback) {
+    public static void showGameOverDialog(String message, Runnable onNewGame, Runnable onQuit) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Fin de partie");
             alert.setHeaderText(null);
             alert.setContentText(message);
 
-            // Ajouter le fichier CSS
             alert.getDialogPane().getStylesheets().add(
                     Objects.requireNonNull(GameSettingsDialog.class.getResource("/styles/space-theme.css")).toExternalForm()
             );
             alert.getDialogPane().getStyleClass().add("dialog-pane");
 
-            ButtonType newGame = new ButtonType("Nouvelle partie");
-            ButtonType quit = new ButtonType("Quitter");
-            alert.getButtonTypes().setAll(newGame, quit);
+            ButtonType newGameButtonType = new ButtonType("Nouvelle partie", ButtonBar.ButtonData.OK_DONE);
+            ButtonType quitButtonType = new ButtonType("Quitter", ButtonBar.ButtonData.CANCEL_CLOSE);
 
-            // Style des boutons
-            alert.getDialogPane().lookupButton(newGame).getStyleClass().add("dialog-button");
-            alert.getDialogPane().lookupButton(quit).getStyleClass().add("dialog-button");
+            alert.getButtonTypes().setAll(newGameButtonType, quitButtonType);
 
-            alert.showAndWait().ifPresent(response -> {
-                if (response == newGame) {
-                    callback.onNewGame();
-                } else {
-                    callback.onQuit();
+            alert.getDialogPane().lookupButton(newGameButtonType).getStyleClass().add("dialog-button");
+            alert.getDialogPane().lookupButton(quitButtonType).getStyleClass().add("dialog-button");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            result.ifPresent(button -> {
+                if (button == newGameButtonType) {
+                    onNewGame.run();
+                } else if (button == quitButtonType) {
+                    onQuit.run();
                 }
             });
         });
     }
+
+
 
     public static void showQuitConfirmationDialog(Runnable onConfirm) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -155,13 +153,11 @@ public class GameSettingsDialog {
         alert.setHeaderText("Voulez-vous vraiment quitter le jeu?");
         alert.setContentText("Toute progression non sauvegardée sera perdue.");
 
-        // Ajouter le fichier CSS
         alert.getDialogPane().getStylesheets().add(
                 Objects.requireNonNull(GameSettingsDialog.class.getResource("/styles/space-theme.css")).toExternalForm()
         );
         alert.getDialogPane().getStyleClass().add("dialog-pane");
 
-        // Style des boutons
         alert.getDialogPane().lookupButton(ButtonType.OK).getStyleClass().add("dialog-button");
         alert.getDialogPane().lookupButton(ButtonType.CANCEL).getStyleClass().add("dialog-button");
 
@@ -182,5 +178,4 @@ public class GameSettingsDialog {
             this.theme = theme;
         }
     }
-
 }

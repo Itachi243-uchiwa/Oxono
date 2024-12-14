@@ -30,24 +30,18 @@ public class Game implements Observable {
         this.state = GameState.STARTED;
     }
 
-    /**
-     * Initializes a new game with the specified board size and player number.
-     *
-     * @param sizeBoard    the size of the board
-     * @param playerNumber the number of players in the game
-     */
-    public void initializeGame(int sizeBoard, int playerNumber) {
+    public void initializeGame(int sizeBoard, int gameMode) {
         this.sizeBoard = sizeBoard;
         this.board = new Board(sizeBoard);
         humanPlayer = new Player(ColorPawn.PINK);
 
-        switch (playerNumber) {
+        switch (gameMode) {
             case 2 -> {
                 aiPlayer = new AIPlayer(ColorPawn.BLACK, new RandomAIStrategy(ColorPawn.BLACK));
                 players = new Player[]{humanPlayer, aiPlayer};
             }
             case 3 -> {
-                aiPlayer = new AIPlayer(ColorPawn.BLACK, new SmartAIStrategy(ColorPawn.BLACK));
+                aiPlayer = new AIPlayer(ColorPawn.BLACK, new AdvancedAIStrategy(ColorPawn.BLACK));
                 players = new Player[]{humanPlayer, aiPlayer};
             }
             case 4 -> {
@@ -55,7 +49,7 @@ public class Game implements Observable {
                 Player aiPlayer2 = new AIPlayer(ColorPawn.BLACK, new RandomAIStrategy(ColorPawn.BLACK));
                 players = new Player[]{aiPlayer1, aiPlayer2};
             }
-            default -> players = new Player[]{humanPlayer, playerNumber == 1 ? new Player(ColorPawn.BLACK) : aiPlayer};
+            default -> players = new Player[]{humanPlayer, gameMode == 1 ? new Player(ColorPawn.BLACK) : aiPlayer};
         }
 
         this.totems = new Totem[]{new Totem(Mark.X), new Totem(Mark.O)};
@@ -223,17 +217,19 @@ public class Game implements Observable {
             throw new OxonoException("Player does not have a pawn of the specified mark");
         }
         try {
+            Command command = null;
 
-            Command command = isTotem ? processTotemMove(newPosition, actualTotemPos)
-                    : processPawnMove(mark, newPosition, actualTotemPos);
-            invoker.executeCommand(command);
             if (isTotem) {
+                processTotemMove(newPosition, actualTotemPos);
+                command = new MoveTotemCommand(board.getTotem(newPosition), newPosition, actualTotemPos);
                 notifyObservers(new OxonoEvent(ObservableEvent.MOVE_TOTEM)
                         .addData("totem", lastTotemPlay)
                         .addData("oldPosition", actualTotemPos)
                         .addData("newPosition", newPosition));
             } else {
+                processPawnMove(mark, newPosition, actualTotemPos);
                 Pawn pawn = new Pawn(currentPlayer.getColor(), mark);
+                command = new InsertPawnCommand(pawn, newPosition);
                 currentPlayer.usePawn(mark);
                 notifyObservers(new OxonoEvent(ObservableEvent.PLACE_PAWN)
                         .addData("pawn", pawn)
@@ -244,13 +240,14 @@ public class Game implements Observable {
                     switchPlayer();
                 }
             }
+            invoker.executeCommand(command);
 
         } catch (IllegalArgumentException e) {
             throw new OxonoException("Invalid input data");
         }
     }
 
-    private Command processTotemMove(Position newPosition, Position actualTotemPos) throws OxonoException {
+    private void processTotemMove(Position newPosition, Position actualTotemPos) throws OxonoException {
         Totem totem = board.getTotem(actualTotemPos);
 
         if (!board.isValidMove(newPosition, actualTotemPos)) {
@@ -259,10 +256,10 @@ public class Game implements Observable {
         board.moveTotem(totem, newPosition);
         lastTotemPlay = totem;
         updateTotemPosition(totem, newPosition);
-        return new MoveTotemCommand(totem, newPosition, actualTotemPos);
+
     }
 
-    private Command processPawnMove(Mark mark, Position newPosition, Position actualTotemPos) throws OxonoException {
+    private void processPawnMove(Mark mark, Position newPosition, Position actualTotemPos) throws OxonoException {
         if (lastTotemPlay.getMark() != mark) {
             throw new OxonoException("Invalid mark, choose the pawn whose mark is equal to the totem moved");
         }
@@ -274,7 +271,6 @@ public class Game implements Observable {
         board.insertPawn(pawn, newPosition, actualTotemPos);
         lastPawnPosition = newPosition;
 
-        return new InsertPawnCommand(pawn, newPosition);
     }
 
 
@@ -330,8 +326,8 @@ public class Game implements Observable {
                 Pawn pawn = pawnCommand.getPawn();
                 switchPlayer();
 
-                if (invoker.getUndoPeek() instanceof MoveTotemCommand) {
-                    lastTotemPlay = new Totem(invoker.getUndoPeek().getMovedMark());
+                if (invoker.getUndoPeek() instanceof MoveTotemCommand totemCommand) {
+                    lastTotemPlay = totemCommand.getTotem();
                 }
 
                 state = GameState.WAITING_FOR_PAWN;

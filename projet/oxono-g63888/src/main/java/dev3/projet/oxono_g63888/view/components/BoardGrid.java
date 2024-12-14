@@ -22,8 +22,6 @@ public class BoardGrid {
     private void createBoardGrid() {
         grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
-        grid.setHgap(0);
-        grid.setVgap(0);
         grid.getStyleClass().add("board-container");
     }
 

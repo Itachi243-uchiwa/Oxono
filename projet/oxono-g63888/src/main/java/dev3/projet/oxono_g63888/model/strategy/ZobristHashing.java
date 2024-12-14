@@ -6,10 +6,10 @@ import dev3.projet.oxono_g63888.model.Mark;
 import java.util.Random;
 
 public class ZobristHashing {
-    private final long[][][] pawnTable; // [row][col][pieceType]
-    private final long[][][] totemTable; // [row][col][markType]
-    private static final int PIECE_TYPES = 2; // BLACK, PINK
-    private static final int MARK_TYPES = 2; // X, O
+    private final long[][][] pawnTable;
+    private final long[][][] totemTable;
+    private static final int PIECE_TYPES = 2;
+    private static final int MARK_TYPES = 2;
     private final int size;
 
     public ZobristHashing(int size) {

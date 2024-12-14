@@ -82,7 +82,7 @@ public class Board {
     /**
      * Checks if a position is within the board boundaries
      */
-    private boolean isInBounds(Position pos) {
+    public boolean isInBounds(Position pos) {
         return pos.row() >= 0 && pos.row() < size && pos.column() >= 0 && pos.column() < size;
     }
 

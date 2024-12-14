@@ -51,6 +51,10 @@ public class ConsoleView {
     public void showWinMessage(String colorPlayer) {
         System.out.println("Le joueur " + colorPlayer + " a gagné !");
     }
+    public void showAIMessage(String colorPlayer){
+        System.out.println("C'est au tour de l'IA " + colorPlayer +
+                ". Appuyez sur Entrée pour que l'IA joue.");
+    }
 
     public void showDrawMessage() {
         System.out.println("Le plateau est plein, match nul !");
@@ -76,9 +80,8 @@ public class ConsoleView {
         System.out.println("Le joueur a abandonné la partie.");
     }
 
-    public String getCommandInput() {
+    public void getCommandInput() {
         System.out.println("Entrez une commande (start, restart, quit, undo, redo) ou appuyez sur Entrée pour continuer : ");
-        return scanner.nextLine().trim();
     }
 
     public int getAIChoice() {
@@ -98,6 +101,11 @@ public class ConsoleView {
                 System.out.println("Veuillez entrer un nombre valide.");
             }
         }
+    }
+
+    public String showRestart(){
+        System.out.println("Voulez-vous recommencer le jeu? Yes/No");
+        return scanner.nextLine().trim();
     }
 
     public int getBoardSize() {
