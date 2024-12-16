@@ -34,11 +34,6 @@ public class MoveTotemCommand implements Command {
 
     }
 
-    @Override
-    public Mark getMovedMark() {
-        return totem.getMark();
-    }
-
     public Position getNewPosition() {
         return newPosition;
     }

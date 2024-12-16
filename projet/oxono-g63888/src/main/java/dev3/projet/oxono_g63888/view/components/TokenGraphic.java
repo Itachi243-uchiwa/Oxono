@@ -22,6 +22,13 @@ public class TokenGraphic extends StackPane {
         PAWN, TOTEM
     }
 
+    /**
+     * Constructs a graphical representation of a game piece (TokenGraphic) with the specified color and type.
+     * This graphical element is initialized with shapes and effects based on the piece type (PAWN or TOTEM).
+     *
+     * @param color The color to be applied to the graphical representation of the game piece.
+     * @param type  The type of the game piece, determining whether it is represented as a circle (PAWN) or rounded rectangle (TOTEM).
+     */
     public TokenGraphic(Color color, PieceType type) {
         this.size = 40; // Ajustable en fonction du plateau
 
@@ -60,6 +67,13 @@ public class TokenGraphic extends StackPane {
         getChildren().addAll(baseShape, topShape);
     }
 
+    /**
+     * Updates the graphical representation of the token by clearing the existing visuals
+     * and applying a new mark based on the specified type (Mark.X or Mark.O).
+     *
+     * @param mark The Mark to be displayed on the token. It can either be Mark.X or Mark.O,
+     *             representing the type of token to draw on the graphical interface.
+     */
     public void setMark(Mark mark) {
         getChildren().clear(); // Effacer les marquages précédents
         getChildren().addAll(baseShape, topShape);
@@ -71,6 +85,16 @@ public class TokenGraphic extends StackPane {
         }
     }
 
+    /**
+     * Adds a graphical representation of an 'X' mark to this TokenGraphic.
+     * This method creates two diagonal lines that intersect to form an 'X' shape.
+     * The lines are styled with a white stroke color, a stroke width of 4, and a drop shadow effect
+     * to provide a sense of depth. The 'X' is scaled relative to the token's size.
+     * This graphical representation visually corresponds to the {@link Mark#X} enum value.
+     *
+     * The created lines are added to the children of this graphical component, ensuring
+     * they are displayed on the screen when rendered within its parent container.
+     */
     private void addMarkX() {
         // Lignes du 'X'
         Line line1 = new Line(-size / 4, -size / 4, size / 4, size / 4);
@@ -87,6 +111,21 @@ public class TokenGraphic extends StackPane {
         getChildren().addAll(line1, line2);
     }
 
+    /**
+     * Adds a graphical representation of a "O" mark to the token.
+     *
+     * This method creates and displays a "O" mark on the token, with its
+     * appearance determined by the type of the base shape of the token:
+     * - If the base shape is a rectangle (representing a totem), a rounded rectangle
+     *   is used for the "O" mark.
+     * - If the base shape is not a rectangle (representing a pawn), a circle is
+     *   used for the "O" mark.
+     *
+     * The created shape is styled with the following properties:
+     * - It has a white stroke color with a stroke width of 4.
+     * - It is filled with a transparent color.
+     * - It includes a drop shadow effect to enhance its visibility.
+     */
     private void addMarkO() {
         // Cercle du 'O'
         if (baseShape instanceof Rectangle) {

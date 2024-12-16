@@ -6,6 +6,9 @@ import java.util.Scanner;
 
 public class ConsoleView {
     private final Scanner scanner;
+    public static final String ANSI_PINK = "\u001B[35m";
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_CYAN = "\u001B[36m";
 
     public ConsoleView() {
         this.scanner = new Scanner(System.in);
@@ -18,15 +21,21 @@ public class ConsoleView {
     public void displayBoard(Game game) {
         for (int i = 0; i < Game.size(); i++) {
             System.out.println("+---".repeat(Game.size()) + "+");
-            for (int j = 0; j <Game.size(); j++) {
+            for (int j = 0; j < Game.size(); j++) {
                 Token token = game.getToken(new Position(i, j));
                 if (token != null) {
                     if (token instanceof Totem totem) {
-                        System.out.print("| " + totem.toString() + " ");
+                        System.out.print("| " + ANSI_CYAN + totem.getMark() + ANSI_RESET + " ");
                     } else {
                         Pawn pawn = (Pawn) token;
-                        System.out.print("| " + pawn.toString() + " ");
+                        if (pawn.getColor() == ColorPawn.PINK) {
+                            System.out.print("| " + ANSI_PINK + pawn.getMark() + ANSI_RESET + " ");
+                        } else {
+                            System.out.print("| " + pawn.getMark() + ANSI_RESET + " ");
+
+                        }
                     }
+
                 } else {
                     System.out.print("|   ");
                 }
@@ -51,7 +60,8 @@ public class ConsoleView {
     public void showWinMessage(String colorPlayer) {
         System.out.println("Le joueur " + colorPlayer + " a gagné !");
     }
-    public void showAIMessage(String colorPlayer){
+
+    public void showAIMessage(String colorPlayer) {
         System.out.println("C'est au tour de l'IA " + colorPlayer +
                 ". Appuyez sur Entrée pour que l'IA joue.");
     }
@@ -103,7 +113,7 @@ public class ConsoleView {
         }
     }
 
-    public String showRestart(){
+    public String showRestart() {
         System.out.println("Voulez-vous recommencer le jeu? Yes/No");
         return scanner.nextLine().trim();
     }

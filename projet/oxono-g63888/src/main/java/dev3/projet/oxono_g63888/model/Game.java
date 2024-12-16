@@ -13,7 +13,6 @@ public class Game implements Observable {
     private Player currentPlayer;
     private AIPlayer aiPlayer;
     private Player humanPlayer;
-    private Totem[] totems;
     private Position totemXposition;
     private Position totemOposition;
     private Totem lastTotemPlay;
@@ -30,6 +29,18 @@ public class Game implements Observable {
         this.state = GameState.STARTED;
     }
 
+    /**
+     * Initializes the game with the specified board size and game mode.
+     * Sets up the game components such as the board, players, and game state,
+     * and notifies observers that the game has started.
+     *
+     * @param sizeBoard the size of the board to be created for the game
+     * @param gameMode the game mode to determine the type of players:
+     *                 1 for single-player with another human,
+     *                 2 for single-player against a Random AI,
+     *                 3 for single-player against an Advanced AI,
+     *                 4 for AI vs AI mode
+     */
     public void initializeGame(int sizeBoard, int gameMode) {
         this.sizeBoard = sizeBoard;
         this.board = new Board(sizeBoard);
@@ -52,7 +63,6 @@ public class Game implements Observable {
             default -> players = new Player[]{humanPlayer, gameMode == 1 ? new Player(ColorPawn.BLACK) : aiPlayer};
         }
 
-        this.totems = new Totem[]{new Totem(Mark.X), new Totem(Mark.O)};
         this.totemXposition = board.getTotemPosition(Mark.X);
         this.totemOposition = board.getTotemPosition(Mark.O);
         currentPlayer = players[0];
@@ -295,10 +305,24 @@ public class Game implements Observable {
         return isWinning;
     }
 
+    /**
+     * Switches the current player to the other player in the game.
+     * This method alternates the `currentPlayer` field between the two
+     * players stored in the `players` array. If the `currentPlayer`
+     * is the first player in the array, it switches to the second
+     * player, and vice versa.
+     */
     private void switchPlayer() {
         currentPlayer = (currentPlayer == players[0]) ? players[1] : players[0];
     }
 
+    /**
+     * Checks whether the game has ended in a draw.
+     * A draw occurs if the game is not in the GAME_OVER state and both players have no pawns remaining.
+     * If a draw is detected, it notifies observers with a DRAW event and updates the game state to GAME_OVER.
+     *
+     * @return true if the game ends in a draw, false otherwise.
+     */
     public boolean isDraw() {
         boolean isDrawing = false;
         if (state != GameState.GAME_OVER) {
@@ -312,6 +336,19 @@ public class Game implements Observable {
     }
 
 
+    /**
+     * Undoes the last action performed in the game, reverting the game state
+     * to its previous condition. Depending on the nature of the action undone,
+     * it adjusts the game state and notifies the observers of the change.
+     * The undo operation can revert either a pawn placement or a totem movement.
+     *
+     * Before undoing, the method checks if the game permits undoing in the
+     * current state and if the previous action can indeed be undone. Specific
+     * game states, such as GAME_OVER, prohibit undo operations.
+     *
+     * @return true if the undo operation was successfully performed;
+     *         false if undoing was not allowed or not possible.
+     */
     public boolean undo() {
         if (state == GameState.GAME_OVER || !canUndo()) {
             return false;
@@ -358,6 +395,15 @@ public class Game implements Observable {
     }
 
 
+    /**
+     * Redoes the most recently undone game action, restoring the game state to what it was
+     * after the redone move was executed. This method manages the reapplication of either
+     * a totem or pawn move, including updating positions, game state, and notifying observers.
+     * The operation will not succeed if the game is over or if no redo action is available.
+     *
+     * @return true if the redo operation was successfully completed, false otherwise.
+     * @throws OxonoException if the redo operation cannot be performed due to an internal issue.
+     */
     public boolean redo() throws OxonoException {
         if (state == GameState.GAME_OVER || !canRedo()) {
             return false;
@@ -398,30 +444,79 @@ public class Game implements Observable {
         return true;
     }
 
+    /**
+     * Retrieves a list of possible moves for the totem located at the specified position.
+     * The calculation of possible moves depends on the current state of the board
+     * and the rules associated with totem movement.
+     *
+     * @param position the position of the totem for which possible moves are to be determined.
+     * @return a list of possible positions to which the totem can move.
+     */
     public List<Position> getMovesPossilesForTotem(Position position) {
         return board.getMovesPossibles(position);
     }
 
+    /**
+     * Determines whether an undo operation can be performed in the current game state.
+     * The ability to undo depends on whether the invoker has actions that can be undone
+     * and whether an undo or redo operation is not already in progress.
+     *
+     * @return true if an undo operation can be performed, false otherwise.
+     */
     public boolean canUndo() {
         return invoker.canUndo() && !isUndoRedoInProgress;
     }
 
+    /**
+     * Checks if a redo operation can be performed in the current state of the game.
+     * A redo operation is only available if the invoker stack allows it and no undo/redo operation
+     * is currently in progress.
+     *
+     * @return true if a redo operation is possible, false otherwise.
+     */
     public boolean canRedo() {
         return invoker.canRedo() && !isUndoRedoInProgress;
     }
 
+    /**
+     * Checks whether an undo or redo operation is currently in progress.
+     *
+     * @return true if an undo or redo operation is being performed, false otherwise.
+     */
     public boolean isUndoRedoInProgress() {
         return isUndoRedoInProgress;
     }
 
+    /**
+     * Determines whether the current player in the game is an AI player.
+     *
+     * @return true if the current player is an instance of AIPlayer, false otherwise.
+     */
     public boolean isCurrentPlayerAI() {
         return currentPlayer instanceof AIPlayer;
     }
 
+    /**
+     * Returns a string representation of the current player's state.
+     *
+     * @return A string containing information about the current player.
+     */
     public String getToString() {
         return currentPlayer.toString();
     }
 
+    /**
+     * Handles the surrender action for the current player in the game.
+     * When a player surrenders, the game announces the winner and updates the game state accordingly.
+     * The observers are notified of the surrender event along with the winning player's details.
+     *
+     * Behavior:
+     * - Logs a message indicating the player who surrendered and the winner (AI or Human).
+     * - Notifies observers with an {@link OxonoEvent} containing:
+     *   - Event type: ObservableEvent.SURRENDER
+     *   - Additional data: the winning player details under the key "PlayerWin".
+     * - Updates the game state to GameState.SURRENDER.
+     */
     public void surrender() {
         System.out.println("Player " + currentPlayer.getColor() + " surrendered! " +
                 (currentPlayer == players[0] ? "AI wins!" : "Human wins!"));
@@ -431,20 +526,46 @@ public class Game implements Observable {
         state = GameState.SURRENDER;
     }
 
+    /**
+     * Retrieves a list of possible positions where a pawn can be inserted,
+     * relative to the provided totem position.
+     *
+     * @param pos The current position of the totem for which valid pawn insertion positions are calculated.
+     * @return A list of {@code Position} objects representing valid pawn insertion locations based on the totem's position.
+     */
     public List<Position> positionsInsert(Position pos) {
         return board.getInsertionPositions(pos);
     }
 
+    /**
+     * Registers an observer to the game.
+     * The observer will be notified of events or updates in the game.
+     *
+     * @param o the observer to be registered
+     */
     @Override
     public void registerObserver(Observer o) {
         observers.add(o);
     }
 
+    /**
+     * Removes an observer from the list of observers.
+     *
+     * @param o the observer to be removed
+     */
     @Override
     public void removeObserver(Observer o) {
         observers.remove(o);
     }
 
+    /**
+     * Notifies all registered observers about a specific event.
+     * This method iterates through the list of observers and invokes their
+     * {@code update} method, passing the current game instance and the event.
+     *
+     * @param event the event to be passed to the observers. Represents updates
+     *              or changes in the state of the game.
+     */
     @Override
     public void notifyObservers(OxonoEvent event) {
         for (Observer observer : observers) {
@@ -452,6 +573,13 @@ public class Game implements Observable {
         }
     }
 
+    /**
+     * Retrieves the number of remaining pawns for each player and each mark type.
+     * This includes the counts for Mark.X and Mark.O for both players in the game.
+     *
+     * @return An array of integers representing the remaining pawns:
+     *         [pawnsXPlayer1, pawnsOPlayer1, pawnsXPlayer2, pawnsOPlayer2].
+     */
     public int[] getRemainingPawns() {
         int pawnsXplayerPink = players[0].getRemainingPawns(Mark.X);
         int pawns0playerPink = players[0].getRemainingPawns(Mark.O);
@@ -460,30 +588,62 @@ public class Game implements Observable {
         return new int[]{pawnsXplayerPink, pawns0playerPink, pawnsXplayerBlack, pawns0playerBlack};
     }
 
+    /**
+     * Retrieves the current state of the game.
+     *
+     * @return the current {@link GameState} indicating the status of the game,
+     *         such as STARTED, WAITING_FOR_TOTEM, WAITING_FOR_PAWN, GAME_OVER, AI_TURN, or SURRENDER.
+     */
     public GameState getGameState() {
         return state;
     }
 
+    /**
+     * Retrieves the size of the board.
+     *
+     * @return the size of the board represented as an integer.
+     */
     public static int size() {
         return sizeBoard;
     }
 
+    /**
+     * Retrieves the color associated with the current player.
+     *
+     * @return the color of the current player, represented as a {@link ColorPawn}.
+     */
     public ColorPawn getColorPlayer() {
         return currentPlayer.getColor();
     }
 
+    /**
+     * Retrieves the token located at the specified position in the game.
+     *
+     * @param pos The position on the board from which the token is to be retrieved.
+     * @return The token located at the specified position, or null if the position is empty.
+     */
     public Token getToken(Position pos) {
         return board.getToken(pos);
     }
 
+    /**
+     * Retrieves the mark associated with the totem located at the specified position on the board.
+     *
+     * @param pos The position on the board where the totem is located.
+     * @return The {@link Mark} of the totem at the specified position.
+     *         Returns null if no totem exists at the given position or if the totem has no mark.
+     */
     public Mark getMarkTotem(Position pos) {
         return board.getTotem(pos).getMark();
     }
 
+    /**
+     * Retrieves the player who is not the current player,
+     * effectively returning the opponent in the game.
+     *
+     * @return The opponent player of the current player.
+     */
     private Player getOpponent() {
         return currentPlayer == players[0] ? players[1] : players[0];
-    }
-    public int getSizeBoard(){
-        return sizeBoard;
     }
 }

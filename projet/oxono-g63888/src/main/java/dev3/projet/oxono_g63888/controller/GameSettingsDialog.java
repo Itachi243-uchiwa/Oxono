@@ -14,6 +14,13 @@ public class GameSettingsDialog {
     }
 
 
+    /**
+     * Displays a dialog to configure game settings before starting a new game.
+     * Allows the user to select the board size, game mode, and theme.
+     * The selected settings are passed to the provided callback.
+     *
+     * @param callback The callback to handle the chosen game settings, including board size, game mode, and theme.
+     */
     public static void showStartDialog(StartDialogCallback callback) {
         Platform.runLater(() -> {
             Dialog<GameSettings> dialog = new Dialog<>();
@@ -114,6 +121,13 @@ public class GameSettingsDialog {
         });
     }
 
+    /**
+     * Displays a "Game Over" dialog with the provided message and options to start a new game or quit.
+     *
+     * @param message   The message to display in the dialog, indicating the reason for game completion.
+     * @param onNewGame The callback to execute if the user selects the "New Game" option.
+     * @param onQuit    The callback to execute if the user selects the "Quit" option.
+     */
     public static void showGameOverDialog(String message, Runnable onNewGame, Runnable onQuit) {
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -147,6 +161,12 @@ public class GameSettingsDialog {
 
 
 
+    /**
+     * Displays a confirmation dialog for quitting the game. If the user confirms, the provided
+     * callback is executed.
+     *
+     * @param onConfirm The action to execute if the user confirms quitting the game.
+     */
     public static void showQuitConfirmationDialog(Runnable onConfirm) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Quitter");

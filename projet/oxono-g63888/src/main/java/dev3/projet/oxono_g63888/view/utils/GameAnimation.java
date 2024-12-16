@@ -11,7 +11,12 @@ import java.util.Map;
 public class GameAnimation {
 
     /**
-     * Ajoute une animation de rebond pour les totems
+     * Adds a bounce and rotation animation to the specified totem node.
+     * The animation consists of an initial scaling up, a full rotation,
+     * and a final scaling down to create a visually dynamic effect.
+     *
+     * @param totem the {@link Node} object representing the totem to which
+     *              the animation will be applied.
      */
     public static void addTotemBounceAnimation(Node totem) {
         ScaleTransition scaleUp = new ScaleTransition(Duration.millis(200), totem);
@@ -35,7 +40,10 @@ public class GameAnimation {
     }
 
     /**
-     * Ajoute une animation de chute pour les pions
+     * Adds an animation for a Pawn being dropped onto the board.
+     * This animation consists of a vertical drop motion and scaling effect.
+     *
+     * @param pawn The visual node representing the Pawn to be animated.
      */
     public static void addPawnDropAnimation(Node pawn) {
         TranslateTransition drop = new TranslateTransition(Duration.millis(500), pawn);
@@ -54,7 +62,12 @@ public class GameAnimation {
     }
 
     /**
-     * Ajoute une animation de victoire
+     * Adds a victory animation to the specified cells on the board. The animation consists
+     * of a pulsing effect, rotation, and fade transition applied to the cells corresponding
+     * to the given positions. A visual "victory" style is also added to the cells.
+     *
+     * @param positions the list of positions representing the cells to apply the victory animation
+     * @param cellMap a map linking each position to its corresponding StackPane in the board grid
      */
     public static void addVictoryAnimation(List<Position> positions, Map<Position, StackPane> cellMap) {
         positions.forEach(pos -> {

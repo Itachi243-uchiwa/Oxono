@@ -3,12 +3,21 @@ import javafx.scene.Scene;
 
 public class ThemeManager {
     private Scene scene;
-    private String currentTheme;
 
+    /**
+     * Constructs a ThemeManager to manage the theme of a given scene.
+     *
+     * @param scene the JavaFX Scene instance to which themes will be applied
+     */
     public ThemeManager(Scene scene) {
         this.scene = scene;
     }
 
+    /**
+     * Sets the visual theme of the application by applying the appropriate stylesheet to the scene.
+     * Clears any previously applied styles before applying the selected theme.
+     *
+     * @param themeName The*/
     public void setTheme(String themeName) {
         // Nettoyer les styles précédents
         scene.getStylesheets().clear();
@@ -34,10 +43,5 @@ public class ThemeManager {
         };
 
         scene.getStylesheets().add(getClass().getResource(cssPath).toExternalForm());
-        currentTheme = themeName;
-    }
-
-    public String getCurrentTheme() {
-        return currentTheme;
     }
 }

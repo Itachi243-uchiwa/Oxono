@@ -20,7 +20,7 @@ public class ZobristHashing {
     }
 
     private void initializeHashKeys() {
-        Random random = new Random(123456789L); // Fixed seed for reproducibility
+        Random random = new Random(123456789L);
 
         // Initialize pawn hash keys
         for (int row = 0; row < size; row++) {

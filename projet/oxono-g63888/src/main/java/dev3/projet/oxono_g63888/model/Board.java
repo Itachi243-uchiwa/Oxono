@@ -238,7 +238,7 @@ public class Board {
      * Validates if a pawn can be inserted at the given position relative to its totem
      */
     public boolean isValidInsertion(Position pawnPos, Position totemPos) {
-        if (!(isEmpty(pawnPos) || !isInBounds(pawnPos))) {
+        if (!(isEmpty(pawnPos))) {
             return false;
         }
         return getInsertionPositions(totemPos).contains(pawnPos);
@@ -390,51 +390,103 @@ public class Board {
         return positions;
     }
 
+    /**
+     * Validates if the given token is a valid pawn.
+     *
+     * @param token The token to validate.
+     * @return true if the token is not null and is not a totem, false otherwise.
+     */
     private boolean isValidPawn(Token token) {
         return token != null && !isTotem(token);
     }
+    /**
+     * Checks if the given pawns match based on their color or mark, depending
+     * on the value of the checkColor parameter.
+     *
+     * @param currentPawn  The current pawn being evaluated.
+     * @param referencePawn The reference pawn to compare against.
+     * @param checkColor    If true, compares the pawns based on their color;
+     *                      otherwise, compares them based on their mark.
+     * @return true if the pawns match based on the specified condition; false otherwise.
+     */
     private boolean isPawnMatch(Pawn currentPawn, Pawn referencePawn, boolean checkColor) {
         return checkColor ?
                 currentPawn.getColor() == referencePawn.getColor() :
                 currentPawn.getMark() == referencePawn.getMark();
     }
+    /**
+     * Retrieves the list of positions that are part of a winning sequence on the board.
+     *
+     * @return a list of positions that constitute a winning formation.
+     */
     public List<Position> getWinnigPositions() {
         return winningPositions;
     }
+    /**
+     * Retrieves the token located at the specified position on the board.
+     *
+     * @param position The position on the board from which the token is to be retrieved
+     * @return The {@code Token} located at the specified position.
+     */
     public Token getToken(Position position) {
         return board[position.row()][position.column()];
     }
 
+    /**
+     * Retrieves the totem located at the specified position on the board.
+     *
+     * @param position The position on the board where the totem is to be retrieved.
+     * @return The totem object found at the specified position.
+     *         If no totem exists at the position, the method may return null or throw an exception,
+     *         depending on how the board array is managed.
+     */
     public Totem getTotem(Position position) {
         return (Totem) board[position.row()][position.column()];
     }
 
+    /**
+     * Retrieves the size of the board.
+     *
+     * @return the size of the board as an integer.
+     */
     public int getSize() {
         return size;
     }
+    /**
+     * Calculates the Zobrist hash for the current state of the board.
+     * Zobrist hashing is used for efficiently representing the state of a board
+     * in games, providing a unique hash value for different board configurations.
+     *
+     * @return the Zobrist hash value representing the current state of the board
+     */
     public long calculateZobristHash() { return currentHash; }
 
+    /**
+     * Creates a copy of the current board, including all its state and tokens.
+     * The copied board maintains the same configuration, including the size,
+     * current hash, totem positions, winning positions, and all tokens placed
+     * on the board.
+     *
+     * @return A new Board instance that is a deep copy of the current board.
+     */
     public Board copy() {
         Board copiedBoard = new Board(this.size);
         copiedBoard.currentHash = this.currentHash;
-        copiedBoard.totemPosX = this.totemPosX; // Immutable Position, peut être partagé
-        copiedBoard.totemPosO = this.totemPosO; // Immutable Position, peut être partagé
+        copiedBoard.totemPosX = this.totemPosX;
+        copiedBoard.totemPosO = this.totemPosO;
 
-        // Copier les positions gagnantes
         copiedBoard.winningPositions = new ArrayList<>(this.winningPositions);
 
-        // Copier le tableau des Tokens
         copiedBoard.board = new Token[this.size][this.size];
         for (int row = 0; row < this.size; row++) {
             for (int col = 0; col < this.size; col++) {
                 if (this.board[row][col] != null) {
-                    copiedBoard.board[row][col] = this.board[row][col].copy(); // Supposons que Token a une méthode copy()
+                    copiedBoard.board[row][col] = this.board[row][col].copy();
                 }
             }
         }
 
-        // Copier l'objet de hachage Zobrist
-        copiedBoard.zobristHashing = this.zobristHashing; // Si ZobristHashing est immuable, peut être partagé
+        copiedBoard.zobristHashing = this.zobristHashing;
 
         return copiedBoard;
     }

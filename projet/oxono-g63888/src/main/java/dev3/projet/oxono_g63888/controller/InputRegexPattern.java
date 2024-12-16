@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 public enum InputRegexPattern {
 
-    AI_MOVE("^$"), // Touche Enter (chaîne vide) pour l'IA
+    AI_MOVE("^$"),
     START("^start$"),
     RESTART("^restart$"),
     UNDO("^undo$"),
