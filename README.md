@@ -52,7 +52,7 @@ Le jeu Oxono oppose deux joueurs, les roses et les noirs. Le plateau est constit
 
 1. **Cloner le dépôt :**
    ```bash
-   git clone https://git.esi-bru.be/g12345-3dev3a/oxono-g12345.git
+   git clone [https://git.esi-bru.be/g12345-3dev3a/oxono-g12345.git](https://github.com/Itachi243-uchiwa/Oxono.git)
    cd oxono-g12345
    ```
 
